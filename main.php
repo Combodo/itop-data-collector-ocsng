@@ -32,6 +32,18 @@ class OCSServerModelCollector extends SQLCollector
 
 class OCSServerCollector extends SQLCollector
 {
+	public function AttributeIsOptional($sAttCode)
+	{
+		// If the module Service Management for Service Providers is selected during the setup
+		// there is no "services_list" attribute on VirtualMachines. Let's safely ignore it.
+		if ($sAttCode == 'enclosure_id') return true;
+		if ($sAttCode == 'rack_id') return true;
+		if ($sAttCode == 'powerA_id') return true; 
+		if ($sAttCode == 'powerB_id') return true; 
+
+		return parent::AttributeIsOptional($sAttCode);
+	}
+
 	protected function MustProcessBeforeSynchro()
 	{
 		// We must reprocess the CSV data obtained from the inventory script
