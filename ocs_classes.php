@@ -43,6 +43,12 @@ class OCSServerCollector extends SQLCollector
         // Backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
         
+        // For information
+        if ($sAttCode == 'tickets_list')
+        {
+            Utils::Log(LOG_INFO, "[".__CLASS__."] The column tickets_list is used for storing the OCS ID in order to display the OCS tab on Servers. You can safely ignore the warning about it.");
+        }
+        
         return parent::AttributeIsOptional($sAttCode);
     }
     
@@ -87,6 +93,12 @@ class OCSPCCollector extends SQLCollector
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
         
+        // For information
+        if ($sAttCode == 'tickets_list')
+        {
+            Utils::Log(LOG_INFO, "[".__CLASS__."] The column tickets_list is used for storing the OCS ID in order to display the OCS tab on PCs. You can safely ignore the warning about it.");
+        }
+        
         return parent::AttributeIsOptional($sAttCode);
     }
     
@@ -130,6 +142,12 @@ class OCSVirtualMachineCollector extends SQLCollector
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
         
+        // For information
+        if ($sAttCode == 'tickets_list')
+        {
+            Utils::Log(LOG_INFO, "[".__CLASS__."] The column tickets_list is used for storing the OCS ID in order to display the OCS tab on Virtual Machines. You can safely ignore the warning about it.");
+        }
+        
         return parent::AttributeIsOptional($sAttCode);
     }
     
@@ -144,7 +162,7 @@ class OCSVirtualMachineCollector extends SQLCollector
     {
         // Retrieve the identifiers of the OSVersion since we must do a lookup based on two fields: Family + Version
         // which is not supported by the iTop Data Synchro... so let's do the job of an ETL
-        $this->oOSVersionLookup = new LookupTable('SELECT OSVersion', array('osfamily_id_friendlyname', 'name'));
+        $this->oOSVersionLookup = new LookupTable('SELECT OSVersion', array('osfamily_id_friendlyname', 'name'));        
     }
     
     protected function ProcessLineBeforeSynchro(&$aLineData, $iLineIndex)
