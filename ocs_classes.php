@@ -21,6 +21,7 @@ class OCSBrandCollector extends SQLCollector
 class OCSOSFamilyCollector extends SQLCollector
 {
 }
+
 class OCSOSVersionCollector extends SQLCollector
 {
 }
@@ -31,6 +32,9 @@ class OCSServerModelCollector extends SQLCollector
 
 class OCSServerCollector extends SQLCollector
 {
+	protected $oOSVersionLookup;
+	protected $oModelLookup;
+
     public function AttributeIsOptional($sAttCode)
     {
         // If the module Service Management for Service Providers is selected during the setup
@@ -88,7 +92,10 @@ class OCSPCModelCollector extends SQLCollector
 
 class OCSPCCollector extends SQLCollector
 {
-    public function AttributeIsOptional($sAttCode)
+	protected $oOSVersionLookup;
+	protected $oModelLookup;
+
+	public function AttributeIsOptional($sAttCode)
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
@@ -132,12 +139,11 @@ class OCSPCPhysicalInterfaceCollector extends SQLCollector
 {
 }
 
-
-
-
 class OCSVirtualMachineCollector extends SQLCollector
 {
-    public function AttributeIsOptional($sAttCode)
+	protected $oOSVersionLookup;
+
+	public function AttributeIsOptional($sAttCode)
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
