@@ -16,7 +16,7 @@
 
 SetupWebPage::AddModule(
 	__FILE__, // Path to the current file, all other file names are relative to the directory containing this file
-	'data-collector-ocs/1.1.0',
+	'data-collector-ocs/1.0.5',
 	array(
 		// Identification
 		//
