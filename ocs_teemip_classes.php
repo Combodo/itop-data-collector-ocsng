@@ -43,7 +43,7 @@ class OCSPCTeemIpCollector extends OCSPCCollector
 	}
 }
 
-class OCSPCPhysicalInterfaceTeemIpCollector extends SQLCollector
+class OCSPCPhysicalInterfaceTeemIpCollector extends MySQLCollector
 {
 }
 
@@ -76,7 +76,7 @@ class OCSServerTeemIpCollector extends OCSServerCollector
 	}
 }
 
-class OCSServerPhysicalInterfaceTeemIpCollector extends SQLCollector
+class OCSServerPhysicalInterfaceTeemIpCollector extends MySQLCollector
 {
 }
 
@@ -109,11 +109,11 @@ class OCSVirtualMachineTeemIpCollector extends OCSVirtualMachineCollector
 	}
 }
 
-class OCSLogicalInterfaceTeemIpCollector extends SQLCollector
+class OCSLogicalInterfaceTeemIpCollector extends MySQLCollector
 {
 }
 
-class OCSIPAddressCollector extends SQLCollector
+class OCSIPAddressCollector extends MySQLCollector
 {
 	static $bTeemIpIsInstalled;
 	static $bIpDiscoveryIsInstalled;
@@ -237,7 +237,7 @@ class OCSIPv6AddressWithZoneCollector extends OCSIPAddressCollector
 {
 }
 
-class OCSlnkIPInterfaceToIPAddressCollector extends SQLCollector
+class OCSlnkIPInterfaceToIPAddressCollector extends MySQLCollector
 {
 	protected $oIPAddressLookup;
 	protected $oIPInterfaceLookup;
