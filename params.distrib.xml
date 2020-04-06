@@ -1,87 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Default values for parameters. Do NOT alter this file, copy its content 
-	to conf/params.local.xml and edit it instead -->
+<!-- Default values for parameters. Do NOT alter this file, copy its content to conf/params.local.xml and edit it instead -->
 <parameters>
+	<!-- OCS Database -->
 	<sql_host>localhost</sql_host>
 	<sql_database>ocsweb;charset=UTF8</sql_database>
 	<sql_login>root</sql_login>
 	<sql_password>root</sql_password>
+
+	<!-- iTop Application -->
 	<default_org_id>Demo</default_org_id>
 	<default_status>production</default_status>
 	<PCCollection>yes</PCCollection>
 	<ServerCollection>yes</ServerCollection>
 	<VMCollection>yes</VMCollection>
-	<OCSBrandCollector_query>SELECT DISTINCT SMANUFACTURER as primary_key,
-		SMANUFACTURER as name FROM bios</OCSBrandCollector_query>
-	<OCSOSFamilyCollector_query>SELECT DISTINCT OSNAME as
-		primary_key,OSNAME as name FROM hardware</OCSOSFamilyCollector_query>
-	<OCSOSVersionCollector_query>SELECT DISTINCT CONCAT(OSNAME,OSVERSION)
-		as primary_key,OSNAME as osfamily_id,OSVERSION as name FROM hardware
-	</OCSOSVersionCollector_query>
-	<OCSServerModelCollector_query>SELECT DISTINCT
-		CONCAT(SMANUFACTURER,SMODEL) AS primary_key,SMANUFACTURER as
-		brand_id,SMODEL as name, 'Server' As type FROM bios WHERE TYPE COLLATE
-		utf8_general_ci NOT IN ('Notebook','Laptop') AND SMANUFACTURER COLLATE
-		utf8_general_ci NOT LIKE 'VMware%'</OCSServerModelCollector_query>
-	<OCSServerCollector_query>SELECT b.SSN as primary_key,h.ID as
-		tickets_list, h.NAME as name, h.OSNAME as osfamily_id,h.OSVERSION as
-		osversion_id, h.PROCESSORT as cpu, h.MEMORY as ram, h.IPADDR as
-		managementip, b.SMANUFACTURER as brand_id,b.SMODEL as model_id,b.SSN
-		as serialnumber, '$default_status$' as status, '$default_org_id$' as
-		org_id FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id WHERE
-		b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop') AND
-		SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
-	</OCSServerCollector_query>
-	<OCSServerPhysicalInterfaceCollector_query>SELECT n.ID as
-		primary_key,n.DESCRIPTION as name, IF(SPEED REGEXP '^[0-9]+ ',
-		LEFT(SPEED, LOCATE(' ', SPEED)), SPEED) as speed, MACADDR as
-		macaddress, IPADDRESS as ipaddress, IPMASK as ipmask,IPGATEWAY as
-		ipgateway,h.NAME as connectableci_id FROM networks AS n JOIN hardware
-		AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id WHERE
-		SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%' AND b.TYPE
-		COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
-	</OCSServerPhysicalInterfaceCollector_query>
-	<OCSPCModelCollector_query>SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL)
-		AS primary_key,SMANUFACTURER as brand_id,SMODEL as name, 'PC' As type
-		FROM bios WHERE TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
-		AND SMANUFACTURER NOT LIKE 'VMware%'</OCSPCModelCollector_query>
-	<OCSPCCollector_query>SELECT b.SSN as primary_key,h.ID as tickets_list,
-		h.NAME as name, h.OSNAME as osfamily_id,h.OSVERSION as osversion_id,
-		h.PROCESSORT as cpu, h.MEMORY as ram, b.SMANUFACTURER as
-		brand_id,b.SMODEL as model_id,b.SSN as serialnumber,
-		'$default_status$' as status, '$default_org_id$' as org_id FROM
-		hardware AS h JOIN bios AS b ON h.id=b.hardware_id WHERE b.TYPE
-		COLLATE utf8_general_ci IN ('Notebook','Laptop') AND SMANUFACTURER
-		COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSPCCollector_query>
-	<OCSPCPhysicalInterfaceCollector_query>SELECT n.ID as
-		primary_key,n.DESCRIPTION as name, IF(SPEED REGEXP '^[0-9]+ ',
-		LEFT(SPEED, LOCATE(' ', SPEED)), SPEED) as speed, MACADDR as
-		macaddress, IPADDRESS as ipaddress, IPMASK as ipmask,IPGATEWAY as
-		ipgateway,h.NAME as connectableci_id FROM networks AS n JOIN hardware
-		AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id WHERE
-		SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%' AND b.TYPE
-		COLLATE utf8_general_ci IN ('Notebook','Laptop')
-	</OCSPCPhysicalInterfaceCollector_query>
-	<OCSVirtualMachineCollector_query>SELECT h.ID as primary_key,h.ID as
-		tickets_list, h.NAME as name, h.OSNAME as osfamily_id,h.OSVERSION as
-		osversion_id, h.PROCESSORT as cpu, h.MEMORY as ram,h.IPADDR as
-		managementip, '$default_status$' as status, '$default_org_id$' as
-		org_id FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id WHERE
-		SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
-	</OCSVirtualMachineCollector_query>
-	<OCSLogicalInterfaceCollector_query>SELECT n.ID as
-		primary_key,n.DESCRIPTION as name, IF(SPEED REGEXP '^[0-9]+ ',
-		LEFT(SPEED, LOCATE(' ', SPEED)), SPEED) as speed, MACADDR as
-		macaddress, IPADDRESS as ipaddress, IPMASK as ipmask,IPGATEWAY as
-		ipgateway,h.NAME as virtualmachine_id FROM networks AS n JOIN hardware
-		AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id WHERE
-		SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
-	</OCSLogicalInterfaceCollector_query>
-	<json_placeholders>
+
+	<!-- TeemIp options -->
+	<collect_ips>yes</collect_ips>
+	<default_ip_status>allocated</default_ip_status>
+	<manage_ipv6>no</manage_ipv6>
+	<default_view_name></default_view_name>
+
+	<!-- Data synchro parameters -->
+	<json_placeholders type="hash">
+		<prefix>OCSng</prefix>
 		<full_load_interval>604800</full_load_interval><!-- 7 days (in seconds): 7*24*60*60 -->
-		<synchro_status>implementation</synchro_status>
+		<synchro_status>production</synchro_status>
 		<delete_policy>update</delete_policy>l
 		<delete_policy_update>status:obsolete</delete_policy_update>
 		<delete_policy_retention>0</delete_policy_retention>
 	</json_placeholders>
+
+	<!-- Brand -->
+	<OCSBrandCollector_query>SELECT DISTINCT SMANUFACTURER as primary_key,
+		SMANUFACTURER as name
+		FROM bios</OCSBrandCollector_query>
+
+	<!-- OSFamily -->
+	<OCSOSFamilyCollector_query>SELECT DISTINCT OSNAME as primary_key,
+		OSNAME as name
+		FROM hardware</OCSOSFamilyCollector_query>
+
+	<!-- OSVersion -->
+	<OCSOSVersionCollector_query>SELECT DISTINCT CONCAT(OSNAME,OSVERSION) as primary_key,
+		OSNAME as osfamily_id,
+		OSVERSION as name
+		FROM hardware</OCSOSVersionCollector_query>
+
+	<!-- Model for Servers -->
+	<OCSServerModelCollector_query>SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
+		SMANUFACTURER as brand_id,
+		SMODEL as name,
+		'Server' As type
+		FROM bios
+			WHERE TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
+			AND SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerModelCollector_query>
+
+	<!-- Model for PC -->
+	<OCSPCModelCollector_query>SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
+		SMANUFACTURER as brand_id,
+		SMODEL as name,
+		'PC' As type
+		FROM bios
+			WHERE TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
+			AND SMANUFACTURER NOT LIKE 'VMware%'</OCSPCModelCollector_query>
+
+	<!-- PC - TeemIp NOT installed -->
+	<OCSPCCollector_query>SELECT b.SSN as primary_key,
+		h.ID as tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		b.SMANUFACTURER as brand_id,
+		b.SMODEL as model_id,
+		b.SSN as serialnumber,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
+			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSPCCollector_query>
+
+	<!-- PhysicalInterface for PC - TeemIp NOT installed -->
+	<OCSPCPhysicalInterfaceCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		n.MACADDR as macaddress,
+		n.IPADDRESS as ipaddress,
+		n.IPMASK as ipmask,
+		n.IPGATEWAY as ipgateway,
+		h.NAME as connectableci_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+			AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')</OCSPCPhysicalInterfaceCollector_query>
+
+	<!-- PC - TeemIp installed -->
+	<OCSPCTeemIpCollector_query>SELECT b.SSN as primary_key,
+		h.ID as tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		h.IPADDR as ipaddress_id,
+		b.SMANUFACTURER as brand_id,
+		b.SMODEL as model_id,
+		b.SSN as serialnumber,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
+			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSPCTeemIpCollector_query>
+
+	<!-- PhysicalInterface for PC - TeemIp installed -->
+	<OCSPCPhysicalInterfaceTeemIpCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		n.MACADDR as macaddress,
+		h.NAME as connectableci_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+			AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')</OCSPCPhysicalInterfaceTeemIpCollector_query>
+
+	<!-- Server - TeemIp NOT installed -->
+	<OCSServerCollector_query>SELECT b.SSN as primary_key,
+		h.ID as tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		h.IPADDR as managementip,
+		b.SMANUFACTURER as brand_id,
+		b.SMODEL as model_id,
+		b.SSN as serialnumber,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
+			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerCollector_query>
+
+	<!-- PhysicalInterface for Server - TeemIp NOT installed -->
+	<OCSServerPhysicalInterfaceCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		n.MACADDR as macaddress,
+		n.IPADDRESS as ipaddress,
+		n.IPMASK as ipmask,
+		n.IPGATEWAY as ipgateway,
+		h.NAME as connectableci_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')</OCSServerPhysicalInterfaceCollector_query>
+
+	<!-- Server - TeemIp installed -->
+	<OCSServerTeemIpCollector_query>SELECT b.SSN as primary_key,
+		h.ID as tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		h.IPADDR as managementip_id,
+		b.SMANUFACTURER as brand_id,
+		b.SMODEL as model_id,
+		b.SSN as serialnumber,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
+			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerTeemIpCollector_query>
+
+	<!-- PhysicalInterface for Server - TeemIp installed -->
+	<OCSServerPhysicalInterfaceTeemIpCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		MACADDR as macaddress,
+		h.NAME as connectableci_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')</OCSServerPhysicalInterfaceTeemIpCollector_query>
+
+	<!-- VirtualMachine - TeemIp NOT installed -->
+	<OCSVirtualMachineCollector_query>SELECT h.ID as primary_key,
+		h.ID as	tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		h.IPADDR as managementip,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'</OCSVirtualMachineCollector_query>
+
+	<!-- LogicalInterface for VirtualMachine - TeemIp NOT installed -->
+	<OCSLogicalInterfaceCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		n.MACADDR as macaddress,
+		n.IPADDRESS as ipaddress,
+		n.IPMASK as ipmask,
+		n.IPGATEWAY as ipgateway,
+		h.NAME as virtualmachine_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'</OCSLogicalInterfaceCollector_query>
+
+	<!-- VirtualMachine - TeemIp installed -->
+	<OCSVirtualMachineTeemIpCollector_query>SELECT h.ID as primary_key,
+		h.ID as	tickets_list,
+		h.NAME as name,
+		h.OSNAME as osfamily_id,
+		h.OSVERSION as osversion_id,
+		h.PROCESSORT as cpu,
+		h.MEMORY as ram,
+		h.IPADDR as managementip_id,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id
+		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'</OCSVirtualMachineTeemIpCollector_query>
+
+	<!-- LogicalInterface for VirtualMachine - TeemIp installed -->
+	<OCSLogicalInterfaceTeemIpCollector_query>SELECT n.ID as primary_key,
+		n.DESCRIPTION as name,
+		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+		n.MACADDR as macaddress,
+		h.NAME as virtualmachine_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'</OCSLogicalInterfaceTeemIpCollector_query>
+
+	<!-- IPv4Address - TeemIp installed -->
+	<OCSIPv4AddressCollector_query>SELECT n.ID as primary_key,
+		'$default_org_id$' as org_id,
+		n.IPADDRESS as ip,
+		'$default_ip_status$' as status,
+		h.DNS as short_name
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE IF(n.IPADDRESS REGEXP '^[:]', false, true)</OCSIPv4AddressCollector_query>
+
+	<!-- IPv4Address - TeemIp with Zone mgmt installed -->
+	<OCSIPv4AddressWithZoneCollector_query>SELECT n.ID as primary_key,
+		'$default_org_id$' as org_id,
+		n.IPADDRESS as ip,
+		'$default_ip_status$' as status,
+		h.DNS as short_name,
+		'$default_view_name$' as view_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+		WHERE IF(n.IPADDRESS REGEXP '^[:]', false, true)</OCSIPv4AddressWithZoneCollector_query>
+
+	<!-- IPv6Address - TeemIp installed -->
+	<OCSIPv6AddressCollector_query>SELECT n.ID as primary_key,
+		'$default_org_id$' as org_id,
+		n.IPADDRESS as ip,
+		'$default_ip_status$' as status,
+		h.DNS as short_name
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+			WHERE IF(n.IPADDRESS REGEXP '^[:]', true, false)</OCSIPv6AddressCollector_query>
+
+	<!-- IPv6Address - TeemIp with Zone Mgmt installed -->
+	<OCSIPv6AddressWithZoneCollector_query>SELECT n.ID as primary_key,
+		'$default_org_id$' as org_id,
+		n.IPADDRESS as ip,
+		'$default_ip_status$' as status,
+		h.DNS as short_name,
+		'$default_view_name$' as view_id
+		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
+		WHERE IF(n.IPADDRESS REGEXP '^[:]', true, false)</OCSIPv6AddressWithZoneCollector_query>
+
+	<!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
+	<OCSlnkIPInterfaceToIPAddressCollector_query>SELECT n.ID as primary_key,
+		n.MACADDR as ipinterface_id,
+		n.IPADDRESS as ipaddress_id
+		FROM networks AS n</OCSlnkIPInterfaceToIPAddressCollector_query>
+
 </parameters>

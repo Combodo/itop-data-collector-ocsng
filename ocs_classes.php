@@ -14,23 +14,27 @@
 //   You should have received a copy of the GNU Affero General Public License
 //   along with this application. If not, see <http://www.gnu.org/licenses/>
 
-class OCSBrandCollector extends SQLCollector
+class OCSBrandCollector extends MySQLCollector
 {
 }
 
-class OCSOSFamilyCollector extends SQLCollector
-{
-}
-class OCSOSVersionCollector extends SQLCollector
+class OCSOSFamilyCollector extends MySQLCollector
 {
 }
 
-class OCSServerModelCollector extends SQLCollector
+class OCSOSVersionCollector extends MySQLCollector
 {
 }
 
-class OCSServerCollector extends SQLCollector
+class OCSServerModelCollector extends MySQLCollector
 {
+}
+
+class OCSServerCollector extends MySQLCollector
+{
+	protected $oOSVersionLookup;
+	protected $oModelLookup;
+
     public function AttributeIsOptional($sAttCode)
     {
         // If the module Service Management for Service Providers is selected during the setup
@@ -78,17 +82,20 @@ class OCSServerCollector extends SQLCollector
     }
 }
 
-class OCSServerPhysicalInterfaceCollector extends SQLCollector
+class OCSServerPhysicalInterfaceCollector extends MySQLCollector
 {
 }
 
-class OCSPCModelCollector extends SQLCollector
+class OCSPCModelCollector extends MySQLCollector
 {
 }
 
-class OCSPCCollector extends SQLCollector
+class OCSPCCollector extends MySQLCollector
 {
-    public function AttributeIsOptional($sAttCode)
+	protected $oOSVersionLookup;
+	protected $oModelLookup;
+
+	public function AttributeIsOptional($sAttCode)
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
@@ -128,16 +135,15 @@ class OCSPCCollector extends SQLCollector
     }
 }
 
-class OCSPCPhysicalInterfaceCollector extends SQLCollector
+class OCSPCPhysicalInterfaceCollector extends MySQLCollector
 {
 }
 
-
-
-
-class OCSVirtualMachineCollector extends SQLCollector
+class OCSVirtualMachineCollector extends MySQLCollector
 {
-    public function AttributeIsOptional($sAttCode)
+	protected $oOSVersionLookup;
+
+	public function AttributeIsOptional($sAttCode)
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
@@ -171,6 +177,6 @@ class OCSVirtualMachineCollector extends SQLCollector
         $this->oOSVersionLookup->Lookup($aLineData, array('osfamily_id', 'osversion_id'), 'osversion_id', $iLineIndex);
     }
 }
-class OCSLogicalInterfaceCollector extends SQLCollector
+class OCSLogicalInterfaceCollector extends MySQLCollector
 {
 }

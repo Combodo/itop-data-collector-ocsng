@@ -12,7 +12,7 @@
 	"action_on_zero": "create",
 	"action_on_one": "update",
 	"action_on_multiple": "error",
-	"delete_policy": "delete",
+	"delete_policy": "ignore",
 	"delete_policy_update": "",
 	"delete_policy_retention": "0",
 	"attribute_list": [
@@ -25,33 +25,21 @@
 			"friendlyname": "comment"
 		},
 		{
-			"attcode": "ipaddress",
-			"update": "1",
+			"attcode": "ip_list",
+			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipaddress"
-		},
-		{
-			"attcode": "ipgateway",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipgateway"
-		},
-		{
-			"attcode": "ipmask",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipmask"
+			"row_separator": "|",
+			"attribute_separator": ";",
+			"value_separator": ":",
+			"attribute_qualifier": "'",
+			"finalclass": "SynchroAttLinkSet",
+			"friendlyname": "ip_list"
 		},
 		{
 			"attcode": "macaddress",
 			"update": "1",
-			"reconcile": "0",
+			"reconcile": "1",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "macaddress"
@@ -59,14 +47,14 @@
 		{
 			"attcode": "name",
 			"update": "1",
-			"reconcile": "1",
+			"reconcile": "0",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "name"
 		},
 		{
 			"attcode": "speed",
-			"update": "1",
+			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
@@ -82,7 +70,7 @@
 			"friendlyname": "virtualmachine_id"
 		}
 	],
-	"user_delete_policy": "administrators",
+	"user_delete_policy": "nobody",
 	"url_icon": "",
 	"url_application": ""
 }
