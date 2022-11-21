@@ -5,7 +5,7 @@
 	"user_id": "$synchro_user$",
 	"notify_contact_id": "$contact_to_notify$",
 	"scope_class": "LogicalInterface",
-	"database_table_name": "",
+	"database_table_name": "synchro_data_logicalinterface_$prefix$$suffix$",
 	"scope_restriction": "",
 	"full_load_periodicity": "$full_load_interval$",
 	"reconciliation_policy": "use_attributes",
@@ -21,56 +21,28 @@
 			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "comment"
-		},
-		{
-			"attcode": "ipaddress",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipaddress"
-		},
-		{
-			"attcode": "ipgateway",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipgateway"
-		},
-		{
-			"attcode": "ipmask",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipmask"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "macaddress",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "macaddress"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "name",
 			"update": "1",
 			"reconcile": "1",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "name"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "speed",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "speed"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "virtualmachine_id",
@@ -78,8 +50,39 @@
 			"reconcile": "1",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "name",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "virtualmachine_id"
+			"finalclass": "SynchroAttExtKey"
+		},
+		{
+			"attcode": "ipaddress",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
+			"attcode": "ipgateway",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
+			"attcode": "ipmask",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
+			"attcode": "ip_list",
+			"update": "0",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"row_separator": "|",
+			"attribute_separator": ";",
+			"value_separator": ":",
+			"attribute_qualifier": "'",
+			"finalclass": "SynchroAttLinkSet"
 		}
 	],
 	"user_delete_policy": "administrators",

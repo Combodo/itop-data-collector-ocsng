@@ -1,11 +1,11 @@
 {
-	"name": "$prefix$:OSVersion",
-	"description": "$prefix$ Data Collector (v. $version$): OS Versions",
+	"name": "$prefix$:AssetCategory",
+	"description": "$prefix$ Data Collector (v. $version$): Asset Categories",
 	"status": "$synchro_status$",
 	"user_id": "$synchro_user$",
 	"notify_contact_id": "$contact_to_notify$",
-	"scope_class": "OSVersion",
-	"database_table_name":  "synchro_data_osversion_$prefix$$suffix$",
+	"scope_class": "OCSAssetCategory",
+	"database_table_name":  "synchro_data_assetcategory_$prefix$$suffix$",
 	"scope_restriction": "",
 	"full_load_periodicity": "$full_load_interval$",
 	"reconciliation_policy": "use_attributes",
@@ -24,15 +24,20 @@
 			"finalclass": "SynchroAttribute"
 		},
 		{
-			"attcode": "osfamily_id",
-			"update": "1",
-			"reconcile": "1",
+			"attcode": "target_class",
+			"update": "0",
+			"reconcile": "0",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "name",
-			"finalclass": "SynchroAttExtKey"
+			"finalclass": "SynchroAttribute"
+		}, {
+			"attcode": "description",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
 		}
 	],
-	"user_delete_policy": "administrators",
+	"user_delete_policy": "nobody",
 	"url_icon": "",
 	"url_application": ""
 }

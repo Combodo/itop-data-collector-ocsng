@@ -5,7 +5,7 @@
 	"user_id": "$synchro_user$",
 	"notify_contact_id": "$contact_to_notify$",
 	"scope_class": "lnkIPInterfaceToIPAddress",
-	"database_table_name": "",
+	"database_table_name":  "synchro_data_lnkipinterfacetoipaddress_$prefix$$suffix$",
 	"scope_restriction": "",
 	"full_load_periodicity": "$full_load_interval$",
 	"reconciliation_policy": "use_attributes",
@@ -21,9 +21,8 @@
 			"update": "1",
 			"reconcile": "1",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "friendlyname",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "ipaddress_id"
+			"reconciliation_attcode": "id",
+			"finalclass": "SynchroAttExtKey"
 		},
 		{
 			"attcode": "ipinterface_id",
@@ -31,8 +30,7 @@
 			"reconcile": "1",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "macaddress",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "ipinterface_id"
+			"finalclass": "SynchroAttExtKey"
 		}
 	],
 	"user_delete_policy": "administrators",
