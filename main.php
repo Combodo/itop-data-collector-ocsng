@@ -109,3 +109,8 @@ if (($bTeemIpIsInstalled) && ($bCollectIps == 'yes'))
 {
 	Orchestrator::AddCollector($iRank++, 'OCSlnkIPInterfaceToIPAddressCollector');
 }
+Orchestrator::AddCollector($iRank++, 'OCSMobilePhoneCollector');
+Orchestrator::AddCollector($iRank++, 'OCSPrinterCollector');
+Orchestrator::AddCollector($iRank++, 'OCSSoftwareCollector');
+Orchestrator::AddCollector($iRank++, 'OCSPCSoftwareCollector');
+

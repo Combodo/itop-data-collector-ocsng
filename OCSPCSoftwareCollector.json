@@ -1,10 +1,10 @@
 {
-	"name": "$prefix$:PC",
-	"description": "$prefix$ Data Collector (v. $version$): PCs",
+	"name": "$prefix$:PCSoftware",
+	"description": "$prefix$ Data Collector (v. $version$): PCSoftware",
 	"status": "$synchro_status$",
 	"user_id": "$synchro_user$",
 	"notify_contact_id": "$contact_to_notify$",
-	"scope_class": "PC",
+	"scope_class": "PCSoftware",
 	"database_table_name": "",
 	"scope_restriction": "",
 	"full_load_periodicity": "$full_load_interval$",
@@ -29,23 +29,6 @@
 			"friendlyname": "applicationsolution_list"
 		},
 		{
-			"attcode": "asset_number",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "asset_number"
-		},
-		{
-			"attcode": "brand_id",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"reconciliation_attcode": "name",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "brand_id"
-		},
-		{
 			"attcode": "business_criticity",
 			"update": "0",
 			"reconcile": "0",
@@ -66,16 +49,8 @@
 			"friendlyname": "contacts_list"
 		},
 		{
-			"attcode": "cpu",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "cpu"
-		},
-		{
 			"attcode": "description",
-			"update": "0",
+			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
@@ -94,32 +69,6 @@
 			"friendlyname": "documents_list"
 		},
 		{
-			"attcode": "end_of_warranty",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "end_of_warranty"
-		},
-		{
-			"attcode": "location_id",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "location_id"
-		},
-		{
-			"attcode": "model_id",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "model_id"
-		},
-		{
 			"attcode": "move2production",
 			"update": "0",
 			"reconcile": "0",
@@ -130,49 +79,27 @@
 		{
 			"attcode": "name",
 			"update": "1",
-			"reconcile": "0",
+			"reconcile": "1",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "name"
-		},
-		{
-			"attcode": "networkdevice_list",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"row_separator": "|",
-			"attribute_separator": ";",
-			"value_separator": ":",
-			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "networkdevice_list"
 		},
 		{
 			"attcode": "org_id",
 			"update": "1",
 			"reconcile": "1",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "name",
+			"reconciliation_attcode": "",
 			"finalclass": "SynchroAttExtKey",
 			"friendlyname": "org_id"
 		},
 		{
-			"attcode": "osfamily_id",
+			"attcode": "path",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "name",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "osfamily_id"
-		},
-		{
-			"attcode": "osversion_id",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "osversion_id"
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "path"
 		},
 		{
 			"attcode": "providercontracts_list",
@@ -187,30 +114,6 @@
 			"friendlyname": "providercontracts_list"
 		},
 		{
-			"attcode": "purchase_date",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "purchase_date"
-		},
-		{
-			"attcode": "ram",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ram"
-		},
-		{
-			"attcode": "serialnumber",
-			"update": "1",
-			"reconcile": "1",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "serialnumber"
-		},
-		{
 			"attcode": "services_list",
 			"update": "0",
 			"reconcile": "0",
@@ -223,12 +126,39 @@
 			"friendlyname": "services_list"
 		},
 		{
+			"attcode": "software_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"reconciliation_attcode": "friendlyname",
+			"finalclass": "SynchroAttExtKey",
+			"friendlyname": "software_id"
+		},
+		{
+			"attcode": "softwarelicence_id",
+			"update": "0",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"reconciliation_attcode": "",
+			"finalclass": "SynchroAttExtKey",
+			"friendlyname": "softwarelicence_id"
+		},
+		{
 			"attcode": "status",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "status"
+		},
+		{
+			"attcode": "system_id",
+			"update": "1",
+			"reconcile": "1",
+			"update_policy": "master_locked",
+			"reconciliation_attcode": "friendlyname",
+			"finalclass": "SynchroAttExtKey",
+			"friendlyname": "system_id"
 		},
 		{
 			"attcode": "tickets_list",
@@ -241,41 +171,10 @@
 			"attribute_qualifier": "'",
 			"finalclass": "SynchroAttLinkSet",
 			"friendlyname": "tickets_list"
-		},
-		{
-			"attcode": "type",
-			"update": "0",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "type"
-		},
-		{
-			"attcode": "ocs_winprodid",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ocs_winprodid"
-		},
-		{
-			"attcode": "ocs_winprodkey",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ocs_winprodkey"
-		},
-		{
-			"attcode": "ocs_oscomment",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ocs_oscomment"
 		}
 	],
-	"user_delete_policy": "administrators",
+	"user_delete_policy": "nobody",
 	"url_icon": "",
-	"url_application": ""
+	"url_application": "",
+	"friendlyname": "PCSoftware Synchro"
 }

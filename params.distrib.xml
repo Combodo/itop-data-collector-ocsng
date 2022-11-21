@@ -10,6 +10,7 @@
 	<!-- iTop Application -->
 	<default_org_id>Demo</default_org_id>
 	<default_status>production</default_status>
+	<default_active_status>active</default_active_status>
 	<PCCollection>yes</PCCollection>
 	<ServerCollection>yes</ServerCollection>
 	<VMCollection>yes</VMCollection>
@@ -75,14 +76,36 @@
 		b.SMANUFACTURER as brand_id,
 		b.SMODEL as model_id,
 		b.SSN as serialnumber,
+		h.WINPRODID as ocs_winprodid,
+		h.WINPRODKEY as ocs_winprodkey,
+		h.OSCOMMENTS as ocs_oscomment,
 		'$default_status$' as status,
 		'$default_org_id$' as org_id
-		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
-			WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
-			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSPCCollector_query>
+		FROM hardware AS h
+		JOIN bios AS b ON h.id=b.hardware_id
+		WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
+		AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSPCCollector_query>
+
+	<!-- PC - TeemIp NOT installed -->
+	<OCSMobilePhoneCollector_query>SELECT h.ID as primary_key,
+		h.ID as tickets_list,
+		h.NAME as name,
+		h.OSNAME as  ocs_osfamily_id,
+		h.OSVERSION as  ocs_osversion_id,
+		b.SMANUFACTURER as brand_id,
+		b.SMODEL as model_id,
+		b.SSN as serialnumber,
+		h.OSCOMMENTS as ocs_oscomment,
+		'$default_status$' as status,
+		'$default_org_id$' as org_id,
+		s.phonenumber as phonenumber
+		FROM hardware AS h
+		JOIN bios AS b ON b.hardware_id = h.id
+		JOIN sim AS s ON s.hardware_id = h.id
+		WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'</OCSMobilePhoneCollector_query>
 
 	<!-- PhysicalInterface for PC - TeemIp NOT installed -->
-	<OCSPCPhysicalInterfaceCollector_query>SELECT n.ID as primary_key,
+	<OCSPCPhysicalInterfaceCollector_query>SELECT  n.ID as primary_key,
 		n.DESCRIPTION as name,
 		IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
 		n.MACADDR as macaddress,
@@ -90,9 +113,12 @@
 		n.IPMASK as ipmask,
 		n.IPGATEWAY as ipgateway,
 		h.NAME as connectableci_id
-		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
-			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
-			AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')</OCSPCPhysicalInterfaceCollector_query>
+		FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+		JOIN networks AS n ON n_filter.id=n.id
+		JOIN hardware AS h ON n.hardware_id=h.id
+		JOIN bios AS b ON h.id=b.hardware_id
+		WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+		AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')</OCSPCPhysicalInterfaceCollector_query>
 
 	<!-- PC - TeemIp installed -->
 	<OCSPCTeemIpCollector_query>SELECT b.SSN as primary_key,
@@ -136,9 +162,66 @@
 		b.SSN as serialnumber,
 		'$default_status$' as status,
 		'$default_org_id$' as org_id
-		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
-			WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
-			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerCollector_query>
+		FROM hardware AS h
+		JOIN bios AS b ON h.id=b.hardware_id
+		WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
+		AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerCollector_query>
+
+	<OCSPrinterCollector_query>
+		SELECT lp.ID as primary_key,
+					   lp.NAME as name,
+						lp.ADDRESS as ip,
+						p.DRIVER as ocs_driver,
+						'$default_status$' as status,
+						'$default_org_id$' as org_id
+		FROM ocs.listprinters lp
+		LEFT JOIN printers p ON p.HARDWARE_ID=lp.HARDWARE_ID
+								 AND p.PORT=lp.ADDRESS
+		WHERE lp.ADDRESS LIKE '%.%.%.%'
+	</OCSPrinterCollector_query>
+
+	<!-- select software in order to create version which doesn't exist in iTop-->
+	<OCSSoftware_getListFromItop>
+		SELECT Software
+	</OCSSoftware_getListFromItop>
+
+	<OCSSoftwareCollector_query>
+		SELECT sv.ID as primary_key,
+					sn.NAME as name,
+					sv.VERSION as version,
+					sp.PUBLISHER as vendor,
+					'$type_id$' as type
+		FROM ocs.software_name sn
+		JOIN ocs.software s ON s.NAME_ID = sn.ID
+		JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+		JOIN ocs.software_version sv ON sv.ID =s.VERSION_ID
+		JOIN ocs.software_publisher sp ON sp.ID = s.PUBLISHER_ID
+		WHERE sn .name IN ('$softwarelist$')
+	</OCSSoftwareCollector_query>
+
+	<!-- PCSoftware adds a link between PC and software on an existing software already in iTop-->
+	<OCSPCSoftware_getListFromItop>
+		SELECT Software
+		WHERE type='PCSoftware'
+	</OCSPCSoftware_getListFromItop>
+
+	<OCSPCSoftwareCollector_query>
+		SELECT s.id as primary_key,
+		sn.NAME as name,
+		concat(sn.NAME,' ',sv.VERSION) as software_id,
+		h.NAME as system_id,
+		s.folder as path,
+		s.COMMENTS as description,
+		'$default_active_status$' as status,
+		'$default_org_id$' as org_id
+		FROM ocs.software_name sn
+		JOIN ocs.software s ON s.NAME_ID = sn.ID
+		JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+		JOIN ocs.software_version sv ON sv.ID =s.VERSION_ID
+		WHERE sn.NAME in ('$softwarelist$')
+	</OCSPCSoftwareCollector_query>
+
+
 
 	<!-- PhysicalInterface for Server - TeemIp NOT installed -->
 	<OCSServerPhysicalInterfaceCollector_query>SELECT n.ID as primary_key,
@@ -151,7 +234,8 @@
 		h.NAME as connectableci_id
 		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
 			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
-			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')</OCSServerPhysicalInterfaceCollector_query>
+			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
+	</OCSServerPhysicalInterfaceCollector_query>
 
 	<!-- Server - TeemIp installed -->
 	<OCSServerTeemIpCollector_query>SELECT b.SSN as primary_key,
@@ -168,7 +252,7 @@
 		'$default_status$' as status,
 		'$default_org_id$' as org_id
 		FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
-			WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')
+			WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
 			AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'</OCSServerTeemIpCollector_query>
 
 	<!-- PhysicalInterface for Server - TeemIp installed -->
@@ -179,7 +263,8 @@
 		h.NAME as connectableci_id
 		FROM networks AS n JOIN hardware AS h ON n.hardware_id=h.id JOIN bios AS b ON h.id=b.hardware_id
 			WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
-			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop')</OCSServerPhysicalInterfaceTeemIpCollector_query>
+			AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
+	</OCSServerPhysicalInterfaceTeemIpCollector_query>
 
 	<!-- VirtualMachine - TeemIp NOT installed -->
 	<OCSVirtualMachineCollector_query>SELECT h.ID as primary_key,
