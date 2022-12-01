@@ -1,0 +1,19 @@
+{
+  "config": {
+    "platform": {
+      "php": ">=7.0.8"
+    },
+    "classmap-authoritative": true
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  },
+  "name": "combodo/itop-collector-ocs",
+  "type": "itop-extension",
+  "description": "Combodo collector OCS",
+  "require": {
+    "composer-runtime-api": "^2.0"
+  }
+}

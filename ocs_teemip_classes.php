@@ -41,6 +41,7 @@ class OCSPCTeemIpCollector extends OCSPCCollector
 
 		$this->oIPAddressLookup->Lookup($aLineData, array('org_id', 'ipaddress_id'), 'ipaddress_id', $iLineIndex);
 	}
+
 }
 
 class OCSPCPhysicalInterfaceTeemIpCollector extends MySQLCollector
