@@ -24,6 +24,7 @@ class ComposerStaticInit57d77e97642d19efa850e7c6159b4ded
         'OCSPCModelCollector' => __DIR__ . '/../..' . '/src/OCSPCModelCollector.php',
         'OCSPCPhysicalInterfaceCollector' => __DIR__ . '/../..' . '/src/OCSPCPhysicalInterfaceCollector.php',
         'OCSPCSoftwareCollector' => __DIR__ . '/../..' . '/src/OCSPCSoftwareCollector.php',
+        'OCSPCSoftwareWithLicenceCollector' => __DIR__ . '/../..' . '/src/OCSPCSoftwareWithLicenceCollector.php',
         'OCSPrinterCollector' => __DIR__ . '/../..' . '/src/OCSPrinterCollector.php',
         'OCSServerCollector' => __DIR__ . '/../..' . '/src/OCSServerCollector.php',
         'OCSServerModelCollector' => __DIR__ . '/../..' . '/src/OCSServerModelCollector.php',

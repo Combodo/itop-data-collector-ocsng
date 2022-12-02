@@ -15,8 +15,10 @@
 //   You should have received a copy of the GNU Affero General Public License
 //   along with this application. If not, see <http://www.gnu.org/licenses/>
 
-class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
+class OCSPCSoftwareWithLicenceCollector extends OCSPCSoftwareCollector
 {
+    protected $oSoftwareLicence;
+
     private function GetSQLQueryName()
     {
         $sSQLQueryName = "_query";
@@ -25,25 +27,24 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
         }
         return $sSQLQueryName;
     }
-
-    protected function GetTargetClass()
+    protected function MustProcessBeforeSynchro()
     {
-        return 'PCSoftware';
+        // We must reprocess the CSV data obtained from the inventory script
+        // to lookup the Brand/Model and OSFamily/OSVersion in iTop
+        return true;
     }
-    protected function AddOtherParams(&$sQuery)
-    {
-        $sQueryITop = Utils::GetConfigurationValue("OCSPCSoftware_getListFromItop", '');
-        $oRestClient = new RestClient();
-        echo('#####################' . $sQueryITop . '#########################');
-        $aResult = $oRestClient->Get("Software", $sQueryITop, "name");
 
-        $aListSoftware = [];
-        foreach ($aResult['objects'] as $aAttDef) {
-            $aListSoftware[$aAttDef['fields']['name']] = $aAttDef['fields']['name'];
-        }
-        echo('##############################################');
-        echo(implode("','", $aListSoftware));
-        echo('##############################################');
-        $sQuery = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_softwarelist#', implode("','", $aListSoftware), $sQuery);
+    protected function InitProcessBeforeSynchro()
+    {
+        // Retrieve the identifiers of the OSVersion since we must do a lookup based on two fields: Family + Version
+        // which is not supported by the iTop Data Synchro... so let's do the job of an ETL
+        $this->oSoftwareLicence = new LookupTable('SELECT SoftwareLicence', array('software_name', 'org_id','name'));
+
+    }
+
+    protected function ProcessLineBeforeSynchro(&$aLineData, $iLineIndex)
+    {
+        // Process each line of the CSV
+        $this->oSoftwareLicence->Lookup($aLineData, array('name', 'org_id', 'softwarelicence_id'), 'softwarelicence_id', $iLineIndex);
     }
 }

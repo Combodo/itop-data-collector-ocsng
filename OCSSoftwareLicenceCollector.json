@@ -1,10 +1,10 @@
 {
-	"name": "$prefix$:Licences",
-	"description": "$prefix$ Data Collector (v. $version$):Licences",
+	"name": "$prefix$:SoftwareLicence",
+	"description": "$prefix$ Data Collector (v. $version$): SoftwareLicence",
 	"status": "$synchro_status$",
 	"user_id": "$synchro_user$",
 	"notify_contact_id": "$contact_to_notify$",
-	"scope_class": "Licence",
+	"scope_class": "SoftwareLicence",
 	"database_table_name": "",
 	"scope_restriction": "",
 	"full_load_periodicity": "$full_load_interval$",
@@ -82,7 +82,7 @@
 				"update": "1",
 				"reconcile": "1",
 				"update_policy": "master_locked",
-				"reconciliation_attcode": "name",
+				"reconciliation_attcode": "friendlyname",
 				"finalclass": "SynchroAttExtKey",
 				"friendlyname": "software_id"
 			},

@@ -19,6 +19,7 @@ return array(
     'OCSPCModelCollector' => $baseDir . '/src/OCSPCModelCollector.php',
     'OCSPCPhysicalInterfaceCollector' => $baseDir . '/src/OCSPCPhysicalInterfaceCollector.php',
     'OCSPCSoftwareCollector' => $baseDir . '/src/OCSPCSoftwareCollector.php',
+    'OCSPCSoftwareWithLicenceCollector' => $baseDir . '/src/OCSPCSoftwareWithLicenceCollector.php',
     'OCSPrinterCollector' => $baseDir . '/src/OCSPrinterCollector.php',
     'OCSServerCollector' => $baseDir . '/src/OCSServerCollector.php',
     'OCSServerModelCollector' => $baseDir . '/src/OCSServerModelCollector.php',

@@ -23,9 +23,9 @@ $bTeemIpIsInstalled = OCSIPAddressCollector::IsTeemIpInstalled();
 // Register the collectors (one collector class per data synchro task to run)
 // and tell the orchestrator in which order to run them
 $iRank = 1;
-//Orchestrator::AddCollector($iRank++, 'OCSBrandCollector');
-//Orchestrator::AddCollector($iRank++, 'OCSOSFamilyCollector');
-//Orchestrator::AddCollector($iRank++, 'OCSOSVersionCollector');
+Orchestrator::AddCollector($iRank++, 'OCSBrandCollector');
+Orchestrator::AddCollector($iRank++, 'OCSOSFamilyCollector');
+Orchestrator::AddCollector($iRank++, 'OCSOSVersionCollector');
 
 if ($bTeemIpIsInstalled) {
     $bCollectIps = Utils::GetConfigurationValue('collect_ips', 'no');
@@ -95,10 +95,12 @@ if (Utils::GetConfigurationValue('SoftwareCollection', 'yes') == 'yes') {
 }
 if (Utils::GetConfigurationValue('SoftwareCollection', 'yes') == 'yes') {
     Orchestrator::AddCollector($iRank++, 'OCSSoftwareCollector');
-    Orchestrator::AddCollector($iRank++, 'OCSPCSoftwareCollector');
+    if (Utils::GetConfigurationValue('LicenceCollection', 'yes') == 'yes') {
+        Orchestrator::AddCollector($iRank++, 'OCSSoftwareLicenceCollector');
+        Orchestrator::AddCollector($iRank++, 'OCSPCSoftwareWithLicenceCollector');
+    } else {
+        Orchestrator::AddCollector($iRank++, 'OCSPCSoftwareCollector');
+    }
 }
 
-if (Utils::GetConfigurationValue('LicenceCollection', 'yes') == 'yes') {
-    Orchestrator::AddCollector($iRank++, 'OCSSoftwareLicenceCollector');
-    Orchestrator::AddCollector($iRank++, 'OCSPCSoftwareCollector');
-}
+

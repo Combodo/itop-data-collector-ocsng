@@ -758,25 +758,6 @@
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_query>
 
-    <!-- PCSoftware - with licence-->
-    <OCSPCSoftwareCollector_with_licence_query>
-        SELECT s.id as primary_key,
-        sn.NAME as name,
-        concat(sn.NAME,' ',sv.VERSION) as software_id,
-        h.NAME as system_id,
-        s.folder as path,
-        s.COMMENTS as description,
-        '$default_active_status$' as status,
-        '$default_org_id$' as org_id,
-        op.GUID as softwarelicence_id
-        FROM software_name sn
-        JOIN software s ON s.NAME_ID = sn.ID
-        JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN software_version sv ON sv.ID =s.VERSION_ID
-        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID AND op.PRODUCT=sn.NAME AND op.OFFICEVERSION=sv.VERSION
-        WHERE sn.NAME in ('$softwarelist$')
-    </OCSPCSoftwareCollector_with_licence_query>
-
     <!-- PCSoftware - with  use_software_categories without licence-->
     <OCSPCSoftwareCollector_with_categories_query>
         SELECT s.id as primary_key,
@@ -795,8 +776,9 @@
         WHERE sc.CATEGORY_NAME in ('$categorylist$')
     </OCSPCSoftwareCollector_with_categories_query>
 
-    <!-- PCSoftware -  with  use_software_categories and licence-->
-    <OCSPCSoftwareCollector_with_categories_with_licence_query>
+
+    <!-- PCSoftware - with licence-->
+    <ocspcsoftwarewithlicencecollector_query>
         SELECT s.id as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
@@ -812,5 +794,24 @@
         JOIN software_version sv ON sv.ID =s.VERSION_ID
         LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID AND op.PRODUCT=sn.NAME AND op.OFFICEVERSION=sv.VERSION
         WHERE sn.NAME in ('$softwarelist$')
-    </OCSPCSoftwareCollector_with_categories_with_licence_query>
+    </ocspcsoftwarewithlicencecollector_query>
+
+    <!-- PCSoftware -  with  use_software_categories and licence-->
+    <ocspcsoftwarewithlicencecollector_with_categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        op.GUID as softwarelicence_id
+        FROM software_name sn
+        JOIN software s ON s.NAME_ID = sn.ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_version sv ON sv.ID =s.VERSION_ID
+        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID AND op.PRODUCT=sn.NAME AND op.OFFICEVERSION=sv.VERSION
+        WHERE sn.NAME in ('$softwarelist$')
+    </ocspcsoftwarewithlicencecollector_with_categories_query>
 </parameters>
