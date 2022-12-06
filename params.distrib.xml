@@ -119,7 +119,7 @@
     <!-- PC - TeemIp NOT installed -->
     <OCSPCCollector_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -142,7 +142,7 @@
     <!-- PC - TeemIp NOT installed - with categories -->
     <OCSPCCollector_with_categories_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -165,7 +165,7 @@
     <!-- PC - TeemIp installed -->
     <OCSPCTeemIpCollector_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -189,7 +189,7 @@
     <!-- PC - TeemIp installed - with categories -->
     <OCSPCTeemIpCollector_with_categories_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -214,7 +214,7 @@
     <!-- MobilePhone - TeemIp NOT installed -->
     <OCSMobilePhoneCollector_query>
         SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as ocs_osfamily_id,
         h.OSVERSION as ocs_osversion_id,
@@ -234,7 +234,7 @@
     <!-- MobilePhone - TeemIp NOT installed - with categories -->
     <OCSMobilePhoneCollector_with_categories_query>
         SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as ocs_osfamily_id,
         h.OSVERSION as ocs_osversion_id,
@@ -324,7 +324,7 @@
     <!-- Server - TeemIp NOT installed -->
     <OCSServerCollector_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -334,6 +334,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -346,7 +349,7 @@
     <!-- Server - TeemIp NOT installed -->
     <OCSServerCollector_with_categories_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -356,6 +359,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -367,7 +373,7 @@
     <!-- Server - TeemIp installed -->
     <OCSServerTeemIpCollector_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -377,6 +383,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -388,7 +397,7 @@
     <!-- Server - TeemIp installed -->
     <OCSServerTeemIpCollector_with_categories_query>
         SELECT b.SSN as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
@@ -398,6 +407,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -473,13 +485,16 @@
     <!-- VirtualMachine - TeemIp NOT installed -->
     <OCSVirtualMachineCollector_query>
         SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -490,13 +505,16 @@
     <!-- VirtualMachine - TeemIp NOT installed -->
     <OCSVirtualMachineCollector_with_categories_query>
         SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -506,14 +524,18 @@
     </OCSVirtualMachineCollector_with_categories_query>
 
     <!-- VirtualMachine - TeemIp installed -->
-    <OCSVirtualMachineTeemIpCollector_query>SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+    <OCSVirtualMachineTeemIpCollector_query>
+        SELECT h.ID as primary_key,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip_id,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
@@ -521,14 +543,18 @@
     </OCSVirtualMachineTeemIpCollector_query>
 
     <!-- VirtualMachine - TeemIp installed -->
-    <OCSVirtualMachineTeemIpCollector_with_categories_query>SELECT h.ID as primary_key,
-        h.ID as tickets_list,
+    <OCSVirtualMachineTeemIpCollector_with_categories_query>
+        SELECT h.ID as primary_key,
+        h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip_id,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h JOIN bios AS b ON h.id=b.hardware_id
