@@ -215,6 +215,14 @@
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "ocs_driver"
+		},
+		{
+			"attcode": "ocs_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_id"
 		}
 	],
 	"user_delete_policy": "nobody",

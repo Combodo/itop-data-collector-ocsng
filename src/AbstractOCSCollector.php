@@ -9,7 +9,6 @@ abstract class AbstractOCSCollector extends MySQLCollector
      */
     public function Prepare()
     {
-        Utils::Log(LOG_ERR, "PREPARE IN ASSET");
         $bRet = parent::Prepare();
         if (!$bRet) {
             return false;

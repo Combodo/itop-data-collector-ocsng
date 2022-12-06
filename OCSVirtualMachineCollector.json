@@ -208,6 +208,38 @@
 			"reconciliation_attcode": "name",
 			"finalclass": "SynchroAttExtKey",
 			"friendlyname": "virtualhost_id"
+		},
+		{
+			"attcode": "ocs_winprodid",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_winprodid"
+		},
+		{
+			"attcode": "ocs_winprodkey",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_winprodkey"
+		},
+		{
+			"attcode": "ocs_oscomment",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_oscomment"
+		},,
+		{
+			"attcode": "ocs_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_id"
 		}
 	],
 	"user_delete_policy": "administrators",

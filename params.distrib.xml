@@ -175,6 +175,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -196,6 +199,9 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
+        h.WINPRODID as ocs_winprodid,
+        h.WINPRODKEY as ocs_winprodkey,
+        h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
