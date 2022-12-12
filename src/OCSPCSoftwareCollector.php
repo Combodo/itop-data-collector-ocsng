@@ -34,16 +34,13 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
     {
         $sQueryITop = Utils::GetConfigurationValue("OCSPCSoftware_getListFromItop", '');
         $oRestClient = new RestClient();
-        echo('#####################' . $sQueryITop . '#########################');
         $aResult = $oRestClient->Get("Software", $sQueryITop, "name");
 
         $aListSoftware = [];
         foreach ($aResult['objects'] as $aAttDef) {
             $aListSoftware[$aAttDef['fields']['name']] = $aAttDef['fields']['name'];
         }
-        echo('##############################################');
-        echo(implode("','", $aListSoftware));
-        echo('##############################################');
+
         $sQuery = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_softwarelist#', implode("','", $aListSoftware), $sQuery);
     }
 }

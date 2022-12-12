@@ -204,7 +204,7 @@
 		},
 		{
 			"attcode": "oslicence_id",
-			"update": "0",
+			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "",
@@ -326,6 +326,22 @@
 			"attribute_qualifier": "'",
 			"finalclass": "SynchroAttLinkSet",
 			"friendlyname": "tickets_list"
+		},
+		{
+			"attcode": "ocs_oscomment",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_oscomment"
+		},
+		{
+			"attcode": "ocs_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_id"
 		}
 	],
 	"user_delete_policy": "administrators",

@@ -258,6 +258,31 @@
 			"update_policy": "master_locked",
 			"finalclass": "SynchroAttribute",
 			"friendlyname": "type"
+		},
+		{
+			"attcode": "ocs_oscomment",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_oscomment"
+		},
+		{
+			"attcode": "oslicence_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"reconciliation_attcode": "",
+			"finalclass": "SynchroAttExtKey",
+			"friendlyname": "oslicence_id"
+		},
+		{
+			"attcode": "ocs_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ocs_id"
 		}
 	],
 	"user_delete_policy": "administrators",

@@ -20,9 +20,6 @@ class OCSSoftwareLicenceCollector extends MySQLCollector
         $sInitialQuery = $sQuery;
         $bIsFirst = true;
         foreach ($aListSoftware as $sType => $aName) {
-            echo('##############################################');
-            echo($sType . '::' . implode("','", $aName));
-            echo('##############################################');
             $sQueryByType = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_softwarelist#', implode("','", $aName), $sInitialQuery);
             $sQueryByType = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_type_id#', $sType, $sQueryByType);
             if ($bIsFirst) {
