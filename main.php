@@ -15,7 +15,6 @@
 //   along with this application. If not, see <http://www.gnu.org/licenses/>
 
 include(APPROOT . '/collectors/vendor/autoload.php'); // composer autoload
-include(APPROOT . '/collectors/ocs_teemip_classes.php');
 
 // Detects if TeemIp is installed or not
 $bTeemIpIsInstalled = OCSIPAddressCollector::IsTeemIpInstalled();
@@ -54,6 +53,7 @@ if ($bTeemIpIsInstalled) {
 
 if (Utils::GetConfigurationValue('PCCollection', 'yes') == 'yes') {
     Orchestrator::AddCollector($iRank++, 'OCSPCModelCollector');
+    Orchestrator::AddCollector($iRank++, 'OCSOSLicenceCollector');
     if ($bTeemIpIsInstalled) {
         Orchestrator::AddCollector($iRank++, 'OCSPCTeemIpCollector');
         Orchestrator::AddCollector($iRank++, 'OCSPCPhysicalInterfaceTeemIpCollector');

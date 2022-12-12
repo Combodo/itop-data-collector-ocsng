@@ -37,4 +37,9 @@ class OCSMobilePhoneCollector extends MySQLCollector
         $this->oOSVersionLookup->Lookup($aLineData, array('ocs_osfamily_id', 'ocs_osversion_id'), 'ocs_osversion_id', $iLineIndex);
         $this->oModelLookup->Lookup($aLineData, array('brand_id', 'model_id'), 'model_id', $iLineIndex);
     }
+
+    protected function GetTargetClass()
+    {
+        return 'MobilePhone';
+    }
 }

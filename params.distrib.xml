@@ -66,6 +66,17 @@
         FROM hardware
     </OCSOSVersionCollector_query>
 
+    <!-- OSLicence - windows only-->
+    <OCSOSLicenceCollector_query>
+        SELECT DISTINCT CONCAT(OSNAME,OSVERSION,h.WINPRODID) as primary_key,
+        CONCAT(OSNAME,'_',OSVERSION) as osversion_id,
+        h.WINPRODID  as name,
+        h.WINPRODKEY as licence_key,
+        h.OSCOMMENTS as description,
+        '$default_org_id$' as org_id
+        FROM hardware h
+    </OCSOSLicenceCollector_query>
+
     <!--********************  Model for Servers ********************-->
     <!-- Model for Servers -->
     <OCSServerModelCollector_query>
@@ -128,8 +139,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -151,8 +161,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -175,8 +184,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -199,8 +207,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -334,8 +341,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -359,8 +365,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -383,8 +388,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -407,8 +411,7 @@
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -492,8 +495,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -512,8 +514,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -533,8 +534,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip_id,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -552,8 +552,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         h.IPADDR as managementip_id,
-        h.WINPRODID as ocs_winprodid,
-        h.WINPRODKEY as ocs_winprodkey,
+        h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         '$default_status$' as status,
         '$default_org_id$' as org_id
