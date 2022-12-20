@@ -1,7 +1,32 @@
 <?php
-
+/**
+ * @copyright   Copyright (C) 2010-2023 Combodo SARL
+ * @license     http://opensource.org/licenses/AGPL-3.0
+ */
 abstract class AbstractOCSCollector extends MySQLCollector
 {
+    protected $oOCSCollectionPlan;
+    /**
+     * @inheritdoc
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function Init(): void
+    {
+        parent::Init();
+        $this->oOCSCollectionPlan = OCSCollectionPlan::GetPlan();
+    }
+
+    public function GetOCSCollectionPlan() {
+        return $this->oOCSCollectionPlan;
+    }
+
     /**
      * Runs the configured query to start fetching the data from the database
      *

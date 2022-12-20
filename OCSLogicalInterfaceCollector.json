@@ -25,30 +25,6 @@
 			"friendlyname": "comment"
 		},
 		{
-			"attcode": "ipaddress",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipaddress"
-		},
-		{
-			"attcode": "ipgateway",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipgateway"
-		},
-		{
-			"attcode": "ipmask",
-			"update": "1",
-			"reconcile": "0",
-			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "ipmask"
-		},
-		{
 			"attcode": "macaddress",
 			"update": "1",
 			"reconcile": "0",
@@ -80,6 +56,54 @@
 			"reconciliation_attcode": "name",
 			"finalclass": "SynchroAttExtKey",
 			"friendlyname": "virtualmachine_id"
+		},
+		{
+			"attcode": "ipaddress",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ipaddress"
+		},
+		{
+			"attcode": "ipgateway",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ipgateway"
+		},
+		{
+			"attcode": "ipmask",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute",
+			"friendlyname": "ipmask"
+		},
+		{
+			"attcode": "ip_list",
+			"update": "0",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"row_separator": "|",
+			"attribute_separator": ";",
+			"value_separator": ":",
+			"attribute_qualifier": "'",
+			"finalclass": "SynchroAttLinkSet",
+			"friendlyname": "ip_list"
+		},
+		{
+			"attcode": "ip_list",
+			"update": "0",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"row_separator": "|",
+			"attribute_separator": ";",
+			"value_separator": ":",
+			"attribute_qualifier": "'",
+			"finalclass": "SynchroAttLinkSet",
+			"friendlyname": "ip_list"
 		}
 	],
 	"user_delete_policy": "administrators",
