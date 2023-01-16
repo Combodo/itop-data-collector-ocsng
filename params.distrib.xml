@@ -21,7 +21,7 @@
     <MobilePhoneCollection>yes</MobilePhoneCollection>
     <PrinterCollection>yes</PrinterCollection>
     <SoftwareCollection>yes</SoftwareCollection>
-    <LicenceCollection>yes</LicenceCollection>
+    <LicenceCollection>no</LicenceCollection>
 
 	<!-- TeemIp options -->
 	  <collect_ips>yes</collect_ips>
@@ -74,6 +74,7 @@
         h.OSCOMMENTS as description,
         '$default_org_id$' as org_id
         FROM hardware h
+        WHERE WINPRODID is not null
     </OCSOSLicenceCollector_query>
 
 	<!--********************  Model for Servers ********************-->
@@ -148,6 +149,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
     </OCSServerCollector_with_categories_query>
+
     <!--******************** Physical Interface for server **********************-->
     <!-- PhysicalInterface for Server  -->
     <OCSServerPhysicalInterfaceCollector_query>
@@ -412,16 +414,18 @@
 	<!--************************ IP *******************************-->
 	<!-- IPv4Address - TeemIp installed -->
 	<OCSIPv4AddressCollector_query>
-        SELECT n.ID as primary_key,
+        SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
         '$default_ip_status$' as status,
-        h.DNS as short_name,
+        '' as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         WHERE IF(n.IPADDRESS REGEXP '^[:]', false, true)
+        AND n.IPADDRESS!=''
+        group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv4AddressCollector_query>
 
 	<!-- IPv6Address - TeemIp installed -->
@@ -705,13 +709,13 @@
         </collector>
         <collector>
             <!-- Mobile Phone -->
-	        <name>MobilePhoneCollection</name>
+	        <name>OCSMobilePhoneCollector</name>
             <enable>yes</enable>
             <rank>51</rank>
         </collector>
         <collector>
             <!-- Printer -->
-	        <name>PrinterCollection</name>
+	        <name>OCSPrinterCollector</name>
             <enable>yes</enable>
             <rank>52</rank>
         </collector>

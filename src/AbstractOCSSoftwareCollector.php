@@ -21,12 +21,12 @@ abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
     protected function AddOtherParams(&$sQuery)
     {
         if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
-            $sQueryITop = "SELECT  OCSSoftwareCategorie WHERE type='" . $this->GetTargetClass() . "'";
+            $sQueryITop = "SELECT  OCSSoftwareCategory WHERE type='" . $this->GetTargetClass() . "'";
             $oRestClient = new RestClient();
-            $aResult = $oRestClient->Get("OCSSoftwareCategorie", $sQueryITop, "name, type");
+            $aResult = $oRestClient->Get("OCSSoftwareCategory", $sQueryITop, "name, type");
             if(is_null($aResult['objects']))
             {
-                Utils::Log(LOG_ERR, "No OCSSoftwareCategorie found in iTop.");
+                Utils::Log(LOG_ERR, "No OCSSoftwareCategory found in iTop.");
                 return;
             }
             $aListCategories = [];

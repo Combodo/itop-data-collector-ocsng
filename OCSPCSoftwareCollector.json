@@ -25,16 +25,14 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "applicationsolution_list"
+			"finalclass": "SynchroAttLinkSet"
 		},
 		{
 			"attcode": "business_criticity",
 			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "business_criticity"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "contacts_list",
@@ -45,16 +43,14 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "contacts_list"
+			"finalclass": "SynchroAttLinkSet"
 		},
 		{
 			"attcode": "description",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "description"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "documents_list",
@@ -65,41 +61,36 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "documents_list"
+			"finalclass": "SynchroAttLinkSet"
 		},
 		{
 			"attcode": "move2production",
 			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "move2production"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "name",
 			"update": "1",
-			"reconcile": "1",
+			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "name"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "org_id",
 			"update": "1",
 			"reconcile": "1",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "org_id"
+			"reconciliation_attcode": "name",
+			"finalclass": "SynchroAttExtKey"
 		},
 		{
 			"attcode": "path",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "path"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "providercontracts_list",
@@ -110,8 +101,7 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "providercontracts_list"
+			"finalclass": "SynchroAttLinkSet"
 		},
 		{
 			"attcode": "services_list",
@@ -122,8 +112,7 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "services_list"
+			"finalclass": "SynchroAttLinkSet"
 		},
 		{
 			"attcode": "software_id",
@@ -131,8 +120,7 @@
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "friendlyname",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "software_id"
+			"finalclass": "SynchroAttExtKey"
 		},
 		{
 			"attcode": "softwarelicence_id",
@@ -140,16 +128,14 @@
 			"reconcile": "0",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "softwarelicence_id"
+			"finalclass": "SynchroAttExtKey"
 		},
 		{
 			"attcode": "status",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"finalclass": "SynchroAttribute",
-			"friendlyname": "status"
+			"finalclass": "SynchroAttribute"
 		},
 		{
 			"attcode": "system_id",
@@ -157,8 +143,7 @@
 			"reconcile": "1",
 			"update_policy": "master_locked",
 			"reconciliation_attcode": "friendlyname",
-			"finalclass": "SynchroAttExtKey",
-			"friendlyname": "system_id"
+			"finalclass": "SynchroAttExtKey"
 		},
 		{
 			"attcode": "tickets_list",
@@ -169,8 +154,7 @@
 			"attribute_separator": ";",
 			"value_separator": ":",
 			"attribute_qualifier": "'",
-			"finalclass": "SynchroAttLinkSet",
-			"friendlyname": "tickets_list"
+			"finalclass": "SynchroAttLinkSet"
 		}
 	],
 	"user_delete_policy": "nobody",

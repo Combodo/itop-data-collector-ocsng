@@ -17,14 +17,14 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
     protected function AddOtherParams(&$sQuery)
     {
         if (Utils::GetConfigurationValue("use_asset_categories", 'no') == 'yes') {
-            $sQueryITop = "SELECT  OCSAssetCategorie WHERE target_class='" . $this->GetTargetClass() ;
-            Utils::Log(LOG_ERR, $sQueryITop);
+            $sQueryITop = "SELECT  OCSAssetCategory WHERE target_class='" . $this->GetTargetClass()."'" ;
+            Utils::Log(LOG_DEBUG, $sQueryITop);
             $oRestClient = new RestClient();
-            $aResult = $oRestClient->Get("OCSAssetCategorie", $sQueryITop, "name");
-            Utils::Log(LOG_ERR, json_encode($aResult));
+            $aResult = $oRestClient->Get("OCSAssetCategory", $sQueryITop, "name");
+            Utils::Log(LOG_DEBUG, json_encode($aResult));
              if(is_null($aResult['objects']))
             {
-                Utils::Log(LOG_ERR, "No OCSAssetCategorie found in iTop.");
+                Utils::Log(LOG_ERR, "No OCSAssetCategory found in iTop.");
                 return;
             }
             $aListCategories = [];
