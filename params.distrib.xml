@@ -4,7 +4,7 @@
 	<!--************************ Global params *******************************-->
 	<!--*****************************************************************-->
 	<!-- OCS Database -->
-	<sql_host>localhost</sql_host>
+	  <sql_host>localhost</sql_host>
 	<sql_database>ocsweb;charset=UTF8</sql_database>
 	<sql_login>root</sql_login>
 	<sql_password>root</sql_password>
@@ -15,6 +15,7 @@
     <default_active_status>active</default_active_status>
     <use_asset_categories>yes</use_asset_categories>
     <use_software_categories>yes</use_software_categories>
+    <CategoryCollection>yes</CategoryCollection>
     <PCCollection>yes</PCCollection>
     <ServerCollection>yes</ServerCollection>
     <VMCollection>yes</VMCollection>
@@ -32,12 +33,32 @@
 	<!-- Data synchro parameters -->
 	<json_placeholders type="hash">
         <prefix>OCSng</prefix>
+        <suffix></suffix>
         <full_load_interval>604800</full_load_interval><!-- 7 days (in seconds): 7*24*60*60 -->
         <synchro_status>production</synchro_status>
         <delete_policy>update</delete_policy>l
         <delete_policy_update>status:obsolete</delete_policy_update>
         <delete_policy_retention>0</delete_policy_retention>
     </json_placeholders>
+
+    <!--*****************************************************************-->
+    <!--************************ Categories *******************************-->
+    <!--*****************************************************************-->
+
+    <!-- AssetCategory -->
+    <OCSAssetCategoryCollector_query>
+        SELECT category_name as primary_key,
+                       category_name as name,
+                       category_desc as description
+        FROM assets_categories;
+    </OCSAssetCategoryCollector_query>
+
+    <!-- SoftwareCategory -->
+    <OCSSoftwareCategoryCollector_query>
+        SELECT category_name as primary_key,
+                       category_name as name
+        FROM software_categories;
+    </OCSSoftwareCategoryCollector_query>
 
 	<!--*****************************************************************-->
 	<!--************************ Asset *******************************-->
@@ -78,6 +99,7 @@
     </OCSOSLicenceCollector_query>
 
 	<!--********************  Model for Servers ********************-->
+
 	<!-- Model for Servers -->
 	<OCSServerModelCollector_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
@@ -90,7 +112,12 @@
     </OCSServerModelCollector_query>
 
 	<!-- Model for Servers - with  use_asset_categories-->
-	<OCSServerModelCollector_with_categories_query>
+    <OCSServerModelCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='Server'
+    </OCSServerModelCollector_getCategoriesFromItop>
+
+    <OCSServerModelCollector_with_categories_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
         SMANUFACTURER as brand_id,
         SMODEL as name,
@@ -102,6 +129,7 @@
     </OCSServerModelCollector_with_categories_query>
 
     <!--*********************** Server *****************************-->
+
     <!-- Server  -->
     <OCSServerCollector_query>
         SELECT b.SSN as primary_key,
@@ -127,6 +155,11 @@
     </OCSServerCollector_query>
 
     <!-- Server  -->
+    <OCSServerCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='Server'
+    </OCSServerCollector_getCategoriesFromItop>
+
     <OCSServerCollector_with_categories_query>
         SELECT b.SSN as primary_key,
         h.ID as ocs_id,
@@ -151,6 +184,7 @@
     </OCSServerCollector_with_categories_query>
 
     <!--******************** Physical Interface for server **********************-->
+
     <!-- PhysicalInterface for Server  -->
     <OCSServerPhysicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
@@ -169,6 +203,11 @@
     </OCSServerPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for Server  -->
+    <OCSServerPhysicalInterfaceCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='Server'
+    </OCSServerPhysicalInterfaceCollector_getCategoriesFromItop>
+
     <OCSServerPhysicalInterfaceCollector_with_categories_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
@@ -186,6 +225,7 @@
     </OCSServerPhysicalInterfaceCollector_with_categories_query>
 
     <!--******************** Model for PC *************************-->
+
 	<!-- Model for PC -->
 	<OCSPCModelCollector_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
@@ -198,7 +238,12 @@
     </OCSPCModelCollector_query>
 
 	<!-- Model for PC - with  use_asset_categories -->
-	<OCSPCModelCollector_with_categories_query>
+    <OCSPCModelCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='PC'
+    </OCSPCModelCollector_getCategoriesFromItop>
+
+    <OCSPCModelCollector_with_categories_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
         SMANUFACTURER as brand_id,
         SMODEL as name,
@@ -234,7 +279,11 @@
     </OCSPCCollector_query>
 
 	<!-- PC - with categories -->
-	<OCSPCCollector_with_categories_query>
+    <OCSPCCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='PC'
+    </OCSPCCollector_getCategoriesFromItop>
+    <OCSPCCollector_with_categories_query>
         SELECT b.SSN as primary_key,
         h.ID as ocs_id,
         h.NAME as name,
@@ -275,7 +324,12 @@
         AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
     </OCSPCPhysicalInterfaceCollector_query>
 
-    <!-- PhysicalInterface for PC -->
+    <!-- PhysicalInterface for PC with categories -->
+    <OCSPCPhysicalInterfaceCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='PC'
+    </OCSPCPhysicalInterfaceCollector_getCategoriesFromItop>
+
     <OCSPCPhysicalInterfaceCollector_with_categories_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
@@ -294,6 +348,10 @@
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
 	<!--********************* MobilePhone **************************-->
+    <OCSMobilePhoneCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='MobilePhone'
+    </OCSMobilePhoneCollector_getCategoriesFromItop>
 	<!-- MobilePhone  -->
 	<OCSMobilePhoneCollector_query>
         SELECT h.ID as primary_key,
@@ -336,6 +394,10 @@
     </OCSMobilePhoneCollector_with_categories_query>
 
 	<!--******************* VirtualMachine *************************-->
+    <OCSVirtualMachineCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='VirtualMachine'
+    </OCSVirtualMachineCollector_getCategoriesFromItop>
 	<!-- VirtualMachine -->
 	<OCSVirtualMachineCollector_query>
         SELECT h.ID as primary_key,
@@ -378,6 +440,10 @@
     </OCSVirtualMachineCollector_with_categories_query>
 
 	<!--******************* Logical Interface for Virtual Machine *************************-->
+    <OCSLogicalInterfaceCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='VirtualMachine'
+    </OCSLogicalInterfaceCollector_getCategoriesFromItop>
 	<!-- LogicalInterface for VirtualMachine -->
 	<OCSLogicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
@@ -418,7 +484,7 @@
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
         '$default_ip_status$' as status,
-        '' as short_name,
+         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
@@ -430,24 +496,28 @@
 
 	<!-- IPv6Address - TeemIp installed -->
 	<OCSIPv6AddressCollector_query>
-        SELECT n.ID as primary_key,
+        SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
         '$default_ip_status$' as status,
-        h.DNS as short_name,
+        IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         WHERE IF(n.IPADDRESS REGEXP '^[:]', true, false)
+        AND n.IPADDRESS!=''
+        group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv6AddressCollector_query>
 
 	<!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
 	<OCSlnkIPInterfaceToIPAddressCollector_query>
-        SELECT n.ID as primary_key,
+        SELECT min(n.ID) as primary_key,
         n.MACADDR as ipinterface_id,
         n.IPADDRESS as ipaddress_id
         FROM networks AS n
+        WHERE n.IPADDRESS != ''
+        GROUP BY  ipinterface_id, ipaddress_id
     </OCSlnkIPInterfaceToIPAddressCollector_query>
 
 	<!--*********************** Printer ****************************-->
@@ -470,9 +540,13 @@
 
 	<!--*********************** Software ***************************-->
 	<!-- select software in order to create version which doesn't exist in iTop-->
-	<OCSSoftware_getListFromItop>
+	<OCSSoftwareCollector_getListFromItop>
         SELECT Software
-    </OCSSoftware_getListFromItop>
+    </OCSSoftwareCollector_getListFromItop>
+
+	<OCSSoftwareCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+  </OCSSoftwareCollector_with_categories_getListFromItop>
 
 	<!-- Software -->
 	<OCSSoftwareCollector_query>
@@ -496,13 +570,14 @@
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
         '$type_id$' as type
-        FROM software_name sn
-        JOIN software s ON s.NAME_ID = sn.ID
-        JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
-        JOIN software_categories sc ON sc.ID =s.CATEGORY_ID
-        WHERE sc.CATEGORY_NAME in ('$categorylist$')
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN ocs.software_publisher sp ON sp.ID = s.PUBLISHER_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareCollector_with_categories_query>
 
 	<!-- SoftwareLicence -->
@@ -527,15 +602,20 @@
         FROM officepack op
         JOIN software_name sn ON sn.ID= op.PRODUCTID
         JOIN software_categories sc ON sc.ID =s.CATEGORY_ID
-        WHERE sc.CATEGORY_NAME in ('$categorylist$')
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareLicenceCollector_with_categories_query>
 
 	<!--********************** PCSoftware *************************-->
-	<!-- PCSoftware adds a link between PC and software on an existing software already in iTop-->
-	<OCSPCSoftware_getListFromItop>
+	<!-- PCSoftware adds a link between CI and software of type PCSoftware on an existing software already in iTop-->
+	<OCSPCSoftwareCollector_getListFromItop>
         SELECT Software
         WHERE type='PCSoftware'
-    </OCSPCSoftware_getListFromItop>
+    </OCSPCSoftwareCollector_getListFromItop>
+
+	<OCSPCSoftwareCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+        WHERE type='PCSoftware'
+    </OCSPCSoftwareCollector_with_categories_getListFromItop>
 
 	<!-- PCSoftware -->
 	<OCSPCSoftwareCollector_query>
@@ -566,12 +646,14 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM software_name sn
-        JOIN software s ON s.NAME_ID = sn.ID
-        JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN software_categories sc ON sc.ID =s.CATEGORY_ID
-        WHERE sc.CATEGORY_NAME in ('$categorylist$')
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_categories_query>
 
 
@@ -590,7 +672,9 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID AND op.PRODUCT=sn.NAME AND op.OFFICEVERSION=sv.VERSION
+        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID
+        AND op.PRODUCT=sn.NAME
+        AND op.OFFICEVERSION=sv.VERSION
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwarecollector_with_licence_query>
 
@@ -609,10 +693,218 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID AND op.PRODUCT=sn.NAME AND op.OFFICEVERSION=sv.VERSION
+        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID
+        AND op.PRODUCT=sn.NAME
+        AND op.OFFICEVERSION=sv.VERSION
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwarecollector_with_licence_with_categories_query>
 
+
+    <!--********************** WebServer *************************-->
+    <!-- WebServer adds a link between CI and software of type WebServer on an existing software already in iTop-->
+    <OCSWebServerCollector_getListFromItop>
+        SELECT Software
+        WHERE type='WebServer'
+    </OCSWebServerCollector_getListFromItop>
+
+	<OCSWebServerCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+        WHERE type='WebServer'
+    </OCSWebServerCollector_with_categories_getListFromItop>
+
+    <!-- WebServer -->
+    <OCSWebServerCollector_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_name sn
+        JOIN software s ON s.NAME_ID = sn.ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_version sv ON sv.ID =s.VERSION_ID
+        WHERE sn.NAME in ('$softwarelist$')
+    </OCSWebServerCollector_query>
+
+    <!-- WebServer - with  use_software_categories -->
+    <OCSWebServerCollector_with_categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
+    </OCSWebServerCollector_with_categories_query>
+
+
+    <!--********************** OtherSoftware *************************-->
+    <!-- OtherSoftware adds a link between CI and software of type OtherSoftware on an existing software already in iTop-->
+    <OCSOtherSoftwareCollector_getListFromItop>
+        SELECT Software
+        WHERE type='OtherSoftware'
+    </OCSOtherSoftwareCollector_getListFromItop>
+
+	<OCSOtherSoftwareCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+        WHERE type='OtherSoftware'
+    </OCSOtherSoftwareCollector_with_categories_getListFromItop>
+
+    <!-- OtherSoftware -->
+    <OCSOtherSoftwareCollector_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_name sn
+        JOIN software s ON s.NAME_ID = sn.ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_version sv ON sv.ID =s.VERSION_ID
+        WHERE sn.NAME in ('$softwarelist$')
+    </OCSOtherSoftwareCollector_query>
+
+    <!-- OtherSoftware - with  use_software_categories -->
+    <OCSOtherSoftwareCollector_with_categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
+    </OCSOtherSoftwareCollector_with_categories_query>
+
+    <!--********************** Middleware *************************-->
+    <!-- Middleware adds a link between CI and software of type Middleware on an existing software already in iTop-->
+    <OCSMiddlewareCollector_getListFromItop>
+        SELECT Software
+        WHERE type='Middleware'
+    </OCSMiddlewareCollector_getListFromItop>
+
+	<OCSMiddlewareCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+        WHERE type='Middleware'
+    </OCSMiddlewareCollector_with_categories_getListFromItop>
+
+    <!-- Middleware -->
+    <OCSMiddlewareCollector_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_name sn
+        JOIN software s ON s.NAME_ID = sn.ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_version sv ON sv.ID =s.VERSION_ID
+        WHERE sn.NAME in ('$softwarelist$')
+    </OCSMiddlewareCollector_query>
+
+    <!-- Middleware - with  use_software_categories-->
+    <OCSMiddlewareCollector_with_categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
+    </OCSMiddlewareCollector_with_categories_query>
+
+
+    <!--********************** DBServer *************************-->
+    <!-- DBServer adds a link between CI and software of type DBServer on an existing software already in iTop-->
+    <OCSDBServerCollector_getListFromItop>
+        SELECT Software
+        WHERE type='DBServer'
+    </OCSDBServerCollector_getListFromItop>
+
+	<OCSDBServerCollector_with_categories_getListFromItop>
+        SELECT OCSSoftwareCategory
+        WHERE type='DBServer'
+    </OCSDBServerCollector_with_categories_getListFromItop>
+
+    <!-- DBServer -->
+    <OCSDBServerCollector_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_name sn
+        JOIN software s ON s.NAME_ID = sn.ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_version sv ON sv.ID =s.VERSION_ID
+        WHERE sn.NAME in ('$softwarelist$')
+    </OCSDBServerCollector_query>
+
+    <!-- DBServer - with  use_software_categories-->
+    <OCSDBServerCollector_with_categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM ocs.software_categories sc
+        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
+        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN ocs.software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
+    </OCSDBServerCollector_with_categories_query>
 
 	<!-- Class collection sequence -->
 	<collectors_launch_sequence type="array">
@@ -732,10 +1024,46 @@
             <rank>61</rank>
         </collector>
         <collector>
-            <!-- PC Software -->
+            <!-- Software Instance : PC Software -->
 	        <name>OCSPCSoftwareCollector</name>
             <enable>yes</enable>
             <rank>62</rank>
+        </collector>
+        <collector>
+            <!-- Software Instance : DB Server-->
+            <name>OCSDBServerCollector</name>
+            <enable>yes</enable>
+            <rank>63</rank>
+        </collector>
+        <collector>
+            <!-- Software Instance : Middleware-->
+            <name>OCSMiddlewareCollector</name>
+            <enable>yes</enable>
+            <rank>64</rank>
+        </collector>
+        <collector>
+            <!-- Software Instance : Other Software-->
+            <name>OCSOtherSoftwareCollector</name>
+            <enable>yes</enable>
+            <rank>65</rank>
+        </collector>
+        <collector>
+            <!-- Software Instance : Web server-->
+            <name>OCSWebServerCollector</name>
+            <enable>yes</enable>
+            <rank>66</rank>
+        </collector>
+        <collector>
+            <!-- Asset Category-->
+            <name>OCSAssetCategoryCollector</name>
+            <enable>yes</enable>
+            <rank>80</rank>
+        </collector>
+        <collector>
+            <!-- Software Category-->
+            <name>OCSSoftwareCategoryCollector</name>
+            <enable>yes</enable>
+            <rank>81</rank>
         </collector>
     </collectors_launch_sequence>
 </parameters>

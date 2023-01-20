@@ -89,12 +89,12 @@ abstract class AbstractOCSCollector extends MySQLCollector
      * @return mixed|string
      * @throws Exception
      */
-    private function GetSQLQueryName()
+	protected function GetSQLQueryName()
     {
        return "_query";
     }
 
-    protected function AddOtherParams(&$sQuery)
+	protected function AddOtherParams(&$sQuery)
     {
     }
 }

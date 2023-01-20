@@ -5,7 +5,7 @@
  */
 abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
 {
-    private function GetSQLQueryName()
+	protected function GetSQLQueryName()
     {
         $sSQLQueryName = "_query";
         if (Utils::GetConfigurationValue("use_asset_categories", 'no') == 'yes') {
@@ -14,14 +14,19 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
         return $sSQLQueryName;
     }
 
-    protected function AddOtherParams(&$sQuery)
+	protected function AddOtherParams(&$sQuery)
     {
         if (Utils::GetConfigurationValue("use_asset_categories", 'no') == 'yes') {
-            $sQueryITop = "SELECT  OCSAssetCategory WHERE target_class='" . $this->GetTargetClass()."'" ;
-            Utils::Log(LOG_DEBUG, $sQueryITop);
+	        $sSQLQueryName =   '_getCategoriesFromItop';
+	        $sQueryITop = Utils::GetConfigurationValue(get_class($this) .$sSQLQueryName, '');
+	        if ($sQueryITop == '') {
+		        // Try all lowercase
+		        $sQueryITop = Utils::GetConfigurationValue(strtolower(get_class($this)) . $sSQLQueryName, '');
+	        }
+
             $oRestClient = new RestClient();
             $aResult = $oRestClient->Get("OCSAssetCategory", $sQueryITop, "name");
-            Utils::Log(LOG_DEBUG, json_encode($aResult));
+
              if(is_null($aResult['objects']))
             {
                 Utils::Log(LOG_ERR, "No OCSAssetCategory found in iTop.");
@@ -33,6 +38,7 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
             }
 
             $sQuery = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_categorielist#', implode("','", $aListCategories), $sQuery);
+	        Utils::Log(LOG_DEBUG, "************".$sQuery);
         }
     }
 

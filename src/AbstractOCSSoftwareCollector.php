@@ -6,7 +6,7 @@
 abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
 {
 
-    private function GetSQLQueryName()
+	protected function GetSQLQueryName()
     {
         $sSQLQueryName = "_query";
         if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
@@ -18,38 +18,38 @@ abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
 
     abstract protected function GetTargetClass();
 
-    protected function AddOtherParams(&$sQuery)
+	protected function AddOtherParams(&$sQuery)
     {
-        if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
-            $sQueryITop = "SELECT  OCSSoftwareCategory WHERE type='" . $this->GetTargetClass() . "'";
-            $oRestClient = new RestClient();
-            $aResult = $oRestClient->Get("OCSSoftwareCategory", $sQueryITop, "name, type");
-            if(is_null($aResult['objects']))
-            {
-                Utils::Log(LOG_ERR, "No OCSSoftwareCategory found in iTop.");
-                return;
-            }
-            $aListCategories = [];
-            foreach ($aResult['objects'] as $idx => $aAttDef) {
-                $aListCategories[$aAttDef['fields']['name']] = $aAttDef['fields']['name'];
-            }
+		$sSQLQueryName =  '_getListFromItop';
+	    $sClass = "Software";
 
-            $sQuery = str_replace('#ERROR_UNDEFINED_PLACEHOLDER_categorielist#', implode("','", $aListCategories), $sQuery);
-        }
-        else {
-            $sQueryITop = Utils::GetConfigurationValue("OCSSoftware_getListFromItop", '');
-            $oRestClient = new RestClient();
-            $aResult = $oRestClient->Get("Software", $sQueryITop, "name, type");
+	    if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
+		    $sSQLQueryName =  '_with_categories'.$sSQLQueryName;
+			$sClass = "OCSSoftwareCategory";
+	    }
 
-            $aListSoftware = [];
-            foreach ($aResult['objects'] as $idx => $aAttDef) {
-                $sType = $aAttDef['fields']['type'];
-                if (is_null($sType)) {
-                    $sType = 'OtherSoftware';
-                }
-                $aListSoftware[$sType][$aAttDef['fields']['name']] = $aAttDef['fields']['name'];
-            }
+	    $sQueryITop = Utils::GetConfigurationValue(get_class($this) .$sSQLQueryName, '');
+	    if ($sQueryITop == '') {
+		    // Try all lowercase
+		    $sQueryITop = Utils::GetConfigurationValue(strtolower(get_class($this)) . $sSQLQueryName, '');
+	    }
+
+	    $oRestClient = new RestClient();
+        $aResult = $oRestClient->Get($sClass, $sQueryITop, "name, type");
+        if(is_null($aResult['objects']))
+        {
+            Utils::Log(LOG_ERR, "No $sClass found in iTop.");
+            return;
         }
+
+	    $aListSoftware = [];
+	    foreach ($aResult['objects'] as $idx => $aAttDef) {
+		    $sType = $aAttDef['fields']['type'];
+		    if (is_null($sType)) {
+			    $sType = 'OtherSoftware';
+		    }
+		    $aListSoftware[$sType][] = $aAttDef['fields']['name'];
+	    }
 
         $sInitialQuery = $sQuery;
         $bIsFirst = true;
@@ -63,6 +63,14 @@ abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
                 $sQuery = $sQuery . ' UNION ' . $sQueryByType;
             }
         }
-
+	    Utils::Log(LOG_DEBUG, $sQuery);
     }
+
+	public function checkToLaunch():bool
+	{
+		if (Utils::GetConfigurationValue('SoftwareCollection', 'no') == 'yes') {
+			return true;
+		}
+		return false;
+	}
 }
