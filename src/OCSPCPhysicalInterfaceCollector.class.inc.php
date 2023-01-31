@@ -3,7 +3,7 @@
  * @copyright   Copyright (C) 2010-2023 Combodo SARL
  * @license     http://opensource.org/licenses/AGPL-3.0
  */
-class OCSPCPhysicalInterfaceCollector extends AbstractOCSCollector
+class OCSPCPhysicalInterfaceCollector extends AbstractOCSAssetCollector
 {
     public function checkToLaunch():bool
     {
@@ -24,4 +24,9 @@ class OCSPCPhysicalInterfaceCollector extends AbstractOCSCollector
         }
         return parent::AttributeIsOptional($sAttCode);
     }
+
+	protected function GetTargetClass()
+	{
+		return 'PhysicalInterface';
+	}
 }

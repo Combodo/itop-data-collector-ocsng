@@ -195,7 +195,8 @@
         n.IPMASK as ipmask,
         n.IPGATEWAY as ipgateway,
         h.NAME as connectableci_id
-        FROM networks AS n
+        FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
@@ -217,7 +218,8 @@
         n.IPMASK as ipmask,
         n.IPGATEWAY as ipgateway,
         h.NAME as connectableci_id
-        FROM networks AS n
+        FROM  (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
@@ -550,7 +552,7 @@
 
 	<!-- Software -->
 	<OCSSoftwareCollector_query>
-        SELECT sv.ID as primary_key,
+        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
@@ -582,7 +584,7 @@
   </OCSSoftwareCollector_with_categories_getListFromItop>
 
 	<OCSSoftwareCollector_with_categories_query>
-        SELECT sv.ID as primary_key,
+        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,

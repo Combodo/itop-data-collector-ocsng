@@ -3,7 +3,7 @@
  * @copyright   Copyright (C) 2010-2023 Combodo SARL
  * @license     http://opensource.org/licenses/AGPL-3.0
  */
-class OCSLogicalInterfaceCollector extends AbstractOCSCollector
+class OCSLogicalInterfaceCollector extends AbstractOCSAssetCollector
 {
     public function checkToLaunch():bool
     {
@@ -23,4 +23,9 @@ class OCSLogicalInterfaceCollector extends AbstractOCSCollector
         }
         return parent::AttributeIsOptional($sAttCode);
     }
+
+	protected function GetTargetClass()
+	{
+		return 'LogicalInterface';
+	}
 }

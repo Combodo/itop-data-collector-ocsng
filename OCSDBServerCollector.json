@@ -142,7 +142,7 @@
 			"update": "1",
 			"reconcile": "1",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
+			"reconciliation_attcode": "friendlyname",
 			"finalclass": "SynchroAttExtKey"
 		},
 		{
