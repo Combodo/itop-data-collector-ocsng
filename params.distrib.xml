@@ -10,11 +10,14 @@
 	<sql_password>root</sql_password>
 
 	<!-- iTop Application -->
-	  <default_org_id>Demo</default_org_id>
+    <!-- default values -->
+    <default_org_id>Demo</default_org_id>
     <default_status>production</default_status>
     <default_active_status>active</default_active_status>
+    <!--Filter type for synchronization ( categories or default filters ) -->
     <use_asset_categories>yes</use_asset_categories>
     <use_software_categories>yes</use_software_categories>
+    <!-- Class to collect -->
     <CategoryCollection>yes</CategoryCollection>
     <PCCollection>yes</PCCollection>
     <ServerCollection>yes</ServerCollection>
