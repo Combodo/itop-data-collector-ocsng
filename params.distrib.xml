@@ -15,8 +15,8 @@
     <default_status>production</default_status>
     <default_active_status>active</default_active_status>
     <!--Filter type for synchronization ( categories or default filters ) -->
-    <use_asset_categories>yes</use_asset_categories>
-    <use_software_categories>yes</use_software_categories>
+    <use_asset_categories>no</use_asset_categories>
+    <use_software_categories>no</use_software_categories>
     <!-- Class to collect -->
     <CategoryCollection>yes</CategoryCollection>
     <PCCollection>yes</PCCollection>
