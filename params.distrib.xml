@@ -11,7 +11,7 @@
 
 	<!-- iTop Application -->
     <!-- default values -->
-    <default_org_id>Demo</default_org_id>
+	  <default_org_id>Demo</default_org_id>
     <default_status>production</default_status>
     <default_active_status>active</default_active_status>
     <!--Filter type for synchronization ( categories or default filters ) -->
@@ -530,7 +530,7 @@
     </OCSlnkIPInterfaceToIPAddressCollector_query>
 
 	<!--*********************** Printer ****************************-->
-	<OCSPrinterCollector_query>
+	<OCSPrinterCollector_with_listprinters_query>
         SELECT lp.ID as primary_key,
         lp.NAME as name,
         lp.ADDRESS as ip,
@@ -541,6 +541,18 @@
         LEFT JOIN printers p ON p.HARDWARE_ID=lp.HARDWARE_ID
         AND p.PORT=lp.ADDRESS
         WHERE lp.ADDRESS LIKE '%.%.%.%'
+    </OCSPrinterCollector_with_listprinters_query>
+
+	<OCSPrinterCollector_query>
+        SELECT p.ID as primary_key,
+        p.NAME as name,
+        p.PORT as ip,
+        p.DRIVER as ocs_driver,
+        '$default_status$' as status,
+        '$default_org_id$' as org_id
+        FROM printers p
+        WHERE p.port LIKE '%.%.%.%'
+        AND p.port not like '%\_%'
     </OCSPrinterCollector_query>
 
 	<!--*****************************************************************-->

@@ -13,4 +13,13 @@ class OCSPrinterCollector extends AbstractOCSCollector
         }
         return false;
     }
+
+	protected function GetSQLQueryName()
+	{
+		$sSQLQueryName = "_query";
+		if ($this->TestIfTableExistsInOCS('listprinters')) {
+			$sSQLQueryName = "_with_listprinters".$sSQLQueryName;
+		}
+		return $sSQLQueryName;
+	}
 }

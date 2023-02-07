@@ -83,6 +83,21 @@ abstract class AbstractOCSCollector extends MySQLCollector
         return true;
     }
 
+	protected function TestIfTableExistsInOCS($sTableName){
+		$oExistsStatement = $this->oDB->query("SHOW TABLES LIKE '$sTableName'");
+		if ($oExistsStatement === false) {
+			$aInfo = $this->oDB->errorInfo();
+			Utils::Log(LOG_ERR, "[" . get_class($this) . "] Failed to prepare the query: SHOW TABLES LIKE '$sTableName'. Reason: " . $aInfo[0] . ', ' . $aInfo[2]);
+			return false;
+		}
+
+		if ($oExistsStatement->rowCount()>0){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
     /**
      * Get the end of SQL parameter name (prefixed by class name) in the config file
      *

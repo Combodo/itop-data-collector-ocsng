@@ -42,7 +42,18 @@ class OCSSoftwareLicenceCollector extends AbstractOCSCollector
 
     public function checkToLaunch():bool
     {
-        if ( (Utils::GetConfigurationValue('SoftwareCollection', 'no') == 'yes') && (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') ) {
+		if ( Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes' ) {
+
+		    if (Utils::GetConfigurationValue('SoftwareCollection', 'no') == 'no'){
+			    Utils::Log(LOG_ERR, 'Unable to collect office licences without software.');
+			    return false;
+		    }
+
+		    if ($this->TestIfTableExistsInOCS('officepack')){
+			    Utils::Log(LOG_ERR, 'Office Pack plugin is not installed on OCS server. No office licence to collect.');
+			    return false;
+		    }
+
             return true;
         }
         return false;
