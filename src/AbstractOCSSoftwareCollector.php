@@ -38,7 +38,7 @@ abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
         $aResult = $oRestClient->Get($sClass, $sQueryITop, "name, type");
         if(is_null($aResult['objects']))
         {
-            Utils::Log(LOG_ERR, "No $sClass found in iTop.");
+            Utils::Log(LOG_NOTICE, "No $sClass found in iTop with query: ".$sQueryITop);
             return;
         }
 

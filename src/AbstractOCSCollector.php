@@ -47,14 +47,14 @@ abstract class AbstractOCSCollector extends MySQLCollector
         // Read the SQL query from the configuration
         $sSQLQueryName =  $this->GetSQLQueryName(); // by default "_query"
         $sQuery = Utils::GetConfigurationValue(get_class($this) .$sSQLQueryName, '');
-        if ($sQuery == '') {
+	    if ($sQuery == '') {
             // Try all lowercase
             $sQuery = Utils::GetConfigurationValue(strtolower(get_class($this)) . $sSQLQueryName, '');
         }
 
         if ($sQuery == '') {
             // No query at all !!
-            Utils::Log(LOG_ERR, "[" . get_class($this) . "] no SQL query configured! Cannot collect data. The query was expected to be configured as '" . strtolower(get_class($this)) . "_query' in the configuration file.");
+            Utils::Log(LOG_ERR, "[" . get_class($this) . "] no SQL query configured! Cannot collect data. The query was expected to be configured as '" . strtolower(get_class($this)).$sSQLQueryName . "' in the configuration file.");
 
             return false;
         }
@@ -84,6 +84,9 @@ abstract class AbstractOCSCollector extends MySQLCollector
     }
 
 	protected function TestIfTableExistsInOCS($sTableName){
+		if($this->oDB == null){
+			$this->Connect();
+		}
 		$oExistsStatement = $this->oDB->query("SHOW TABLES LIKE '$sTableName'");
 		if ($oExistsStatement === false) {
 			$aInfo = $this->oDB->errorInfo();
@@ -91,7 +94,7 @@ abstract class AbstractOCSCollector extends MySQLCollector
 			return false;
 		}
 
-		if ($oExistsStatement->rowCount()>0){
+		if ($oExistsStatement->fetch()){
 			return true;
 		} else {
 			return false;
