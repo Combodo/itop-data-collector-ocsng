@@ -33,17 +33,17 @@
       <LicenceCollection>no</LicenceCollection>
 
     <!-- TeemIp options -->
+    <!-- used only if teemip is installed -->
 	     <collect_ips>yes</collect_ips>
+    <!-- default values used for synchronization -->
        <default_ip_status>allocated</default_ip_status>
-    <!-- available only for iTop >= 3.2 -->
-        <manage_ipv6>no</manage_ipv6>
         <default_view_name></default_view_name>
 
     <!--  **************  Data synchro parameters **************  -->
     <!-- used to automatically create Synchronization Data Sources objects in iTop -->
     <json_placeholders type="hash">
-          <prefix>OCSng</prefix>
-          <suffix></suffix>
+          <prefix>OCSng</prefix><!--used for data synchro name and table name-->
+          <suffix></suffix><!--used for table name-->
           <full_load_interval>604800</full_load_interval><!-- 7 days (in seconds): 7*24*60*60 -->
           <synchro_status>production</synchro_status>
           <delete_policy>update</delete_policy>l
