@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?><!-- Default values for parameters. Do NOT alter this file, copy its content to conf/params.local.xml and edit it instead -->
 <parameters>
   <!--*********************************************************************-->
-	<!--************************ Global parameters ***************************-->
-	<!--**********************************************************************-->
+    <!--************************ Global parameters ***************************-->
+    <!--**********************************************************************-->
 
-	<!-- ************** OCS ************** -->
+    <!-- ************** OCS ************** -->
     <!-- connection to OCS database -->
-      <sql_host>localhost</sql_host>
+    <sql_host>localhost</sql_host>
       <sql_database>ocsweb;charset=UTF8</sql_database>
 	    <sql_login>root</sql_login>
 	    <sql_password>root</sql_password>
 
-	<!-- **************  iTop Application **************  -->
+    <!-- **************  iTop Application **************  -->
     <!-- default values used for synchronization -->
-      <default_org_id>Demo</default_org_id>
+    <default_org_id>Demo</default_org_id>
       <default_status>production</default_status>
       <default_active_status>active</default_active_status>
 
@@ -23,7 +23,7 @@
       <use_software_categories>no</use_software_categories>
 
     <!-- Class to collect -->
-      <CategoryCollection>yes</CategoryCollection>
+    <CategoryCollection>yes</CategoryCollection>
       <PCCollection>yes</PCCollection>
       <ServerCollection>yes</ServerCollection>
       <VMCollection>yes</VMCollection>
@@ -33,15 +33,15 @@
       <LicenceCollection>no</LicenceCollection>
 
     <!-- TeemIp options -->
-        <!-- used only if teemip is installed -->
+    <!-- used only if teemip is installed -->
         <IPCollection>yes</IPCollection>
-        <!-- default values used for synchronization -->
-        <default_ip_status>allocated</default_ip_status>
+    <!-- default values used for synchronization -->
+    <default_ip_status>allocated</default_ip_status>
         <default_view_name></default_view_name>
 
     <!--  **************  Data synchro parameters **************  -->
     <!-- used to automatically create Synchronization Data Sources objects in iTop -->
-      <json_placeholders type="hash">
+    <json_placeholders type="hash">
           <prefix>OCSng</prefix><!--used for data synchro name and table name-->
           <suffix></suffix><!--used for table name-->
           <full_load_interval>604800</full_load_interval><!-- 7 days (in seconds): 7*24*60*60 -->
@@ -51,7 +51,7 @@
           <delete_policy_retention>0</delete_policy_retention>
       </json_placeholders>
 
-  <!--  parameters in order to manage synchronization of some decimal fields-->
+    <!--  parameters in order to manage synchronization of some decimal fields-->
     <OCSServerCollector_nullified_attributes type="array">
         <attribute>cvss</attribute>
     </OCSServerCollector_nullified_attributes >
@@ -92,34 +92,34 @@
         FROM software_categories;
     </OCSSoftwareCategoryCollector_query>
 
-  <!--**************************************************************-->
-	<!--************************ Asset *******************************-->
-  <!--**************************************************************-->
+    <!--**************************************************************-->
+    <!--************************ Asset *******************************-->
+    <!--**************************************************************-->
 
-	<!-- Brand -->
-	<OCSBrandCollector_query>
+    <!-- Brand -->
+    <OCSBrandCollector_query>
         SELECT DISTINCT SMANUFACTURER as primary_key,
         SMANUFACTURER as name
         FROM bios
     </OCSBrandCollector_query>
 
-	<!-- OSFamily -->
-	<OCSOSFamilyCollector_query>
+    <!-- OSFamily -->
+    <OCSOSFamilyCollector_query>
         SELECT DISTINCT OSNAME as primary_key,
         OSNAME as name
         FROM hardware
     </OCSOSFamilyCollector_query>
 
-	<!-- OSVersion -->
-	<OCSOSVersionCollector_query>
+    <!-- OSVersion -->
+    <OCSOSVersionCollector_query>
         SELECT DISTINCT CONCAT(OSNAME,OSVERSION) as primary_key,
         OSNAME as osfamily_id,
         OSVERSION as name
         FROM hardware
     </OCSOSVersionCollector_query>
 
-	<!-- OSLicence - windows only-->
-	<OCSOSLicenceCollector_query>
+    <!-- OSLicence - windows only-->
+    <OCSOSLicenceCollector_query>
         SELECT DISTINCT CONCAT(OSNAME,OSVERSION,h.WINPRODID) as primary_key,
         CONCAT(OSNAME,'_',OSVERSION) as osversion_id,
         h.WINPRODID  as name,
@@ -130,9 +130,9 @@
         WHERE WINPRODID is not null
     </OCSOSLicenceCollector_query>
 
-	<!--********************  Model for Servers ********************-->
-	<!-- Model for Servers -->
-	<OCSServerModelCollector_query>
+    <!--********************  Model for Servers ********************-->
+    <!-- Model for Servers -->
+    <OCSServerModelCollector_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
         SMANUFACTURER as brand_id,
         SMODEL as name,
@@ -142,7 +142,7 @@
         AND SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
     </OCSServerModelCollector_query>
 
-	<!-- Model for Servers - with  use_asset_categories-->
+    <!-- Model for Servers - with  use_asset_categories-->
     <OCSServerModelCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='Server'
@@ -176,7 +176,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search sc where sc.name_id=s.NAME_ID and sc.version_id=sv.version_ID) as cvss,
+        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -206,7 +206,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search sc where sc.name_id=s.NAME_ID and sc.version_id=sv.version_ID) as cvss,
+        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -258,8 +258,8 @@
     </OCSServerPhysicalInterfaceCollector_with_categories_query>
 
     <!--******************** Model for PC *************************-->
-	<!-- Model for PC -->
-	<OCSPCModelCollector_query>
+    <!-- Model for PC -->
+    <OCSPCModelCollector_query>
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
         SMANUFACTURER as brand_id,
         SMODEL as name,
@@ -269,7 +269,7 @@
         AND SMANUFACTURER NOT LIKE 'VMware%'
     </OCSPCModelCollector_query>
 
-	<!-- Model for PC - with  use_asset_categories -->
+    <!-- Model for PC - with  use_asset_categories -->
     <OCSPCModelCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='PC'
@@ -286,9 +286,9 @@
         WHERE ac.category_name in ('$categorielist$')
     </OCSPCModelCollector_with_categories_query>
 
-	<!--************************ PC *******************************-->
-	<!-- PC -->
-	<OCSPCCollector_query>
+    <!--************************ PC *******************************-->
+    <!-- PC -->
+    <OCSPCCollector_query>
         SELECT b.SSN as primary_key,
         h.ID as ocs_id,
         h.NAME as name,
@@ -311,7 +311,7 @@
         AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
     </OCSPCCollector_query>
 
-	<!-- PC - with categories -->
+    <!-- PC - with categories -->
     <OCSPCCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='PC'
@@ -383,9 +383,9 @@
         WHERE ac.category_name in ('$categorielist$')
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
-	<!--********************* MobilePhone **************************-->
-	<!-- MobilePhone  -->
-	<OCSMobilePhoneCollector_query>
+    <!--********************* MobilePhone **************************-->
+    <!-- MobilePhone  -->
+    <OCSMobilePhoneCollector_query>
         SELECT h.ID as primary_key,
         h.ID as ocs_id,
         h.NAME as name,
@@ -405,7 +405,7 @@
         WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
     </OCSMobilePhoneCollector_query>
 
-	<!-- MobilePhone - with categories -->
+    <!-- MobilePhone - with categories -->
     <OCSMobilePhoneCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='MobilePhone'
@@ -432,9 +432,9 @@
         WHERE ac.category_name in ('$categorielist$')
     </OCSMobilePhoneCollector_with_categories_query>
 
-	<!--******************* VirtualMachine *************************-->
-	<!-- VirtualMachine -->
-	<OCSVirtualMachineCollector_query>
+    <!--******************* VirtualMachine *************************-->
+    <!-- VirtualMachine -->
+    <OCSVirtualMachineCollector_query>
         SELECT h.ID as primary_key,
         h.ID as ocs_id,
         h.NAME as name,
@@ -454,7 +454,7 @@
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
     </OCSVirtualMachineCollector_query>
 
-	<!-- VirtualMachine -->
+    <!-- VirtualMachine -->
     <OCSVirtualMachineCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='VirtualMachine'
@@ -481,10 +481,10 @@
         WHERE ac.category_name in ('$categorielist$')
     </OCSVirtualMachineCollector_with_categories_query>
 
-	<!--******************* Logical Interface for Virtual Machine *************************-->
+    <!--******************* Logical Interface for Virtual Machine *************************-->
 
-	<!-- LogicalInterface for VirtualMachine -->
-	<OCSLogicalInterfaceCollector_query>
+    <!-- LogicalInterface for VirtualMachine -->
+    <OCSLogicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
@@ -499,7 +499,7 @@
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
     </OCSLogicalInterfaceCollector_query>
 
-	<!-- LogicalInterface for VirtualMachine -->
+    <!-- LogicalInterface for VirtualMachine -->
     <OCSLogicalInterfaceCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='VirtualMachine'
@@ -521,10 +521,10 @@
         WHERE ac.category_name in ('$categorielist$')
     </OCSLogicalInterfaceCollector_with_categories_query>
 
-	<!--************************ IP *******************************-->
+    <!--************************ IP *******************************-->
 
-	<!-- IPv4Address - TeemIp installed -->
-	<OCSIPv4AddressCollector_query>
+    <!-- IPv4Address - TeemIp installed -->
+    <OCSIPv4AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
@@ -539,8 +539,8 @@
         group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv4AddressCollector_query>
 
-	<!-- IPv6Address - TeemIp installed -->
-	<OCSIPv6AddressCollector_query>
+    <!-- IPv6Address - TeemIp installed -->
+    <OCSIPv6AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
@@ -555,8 +555,8 @@
         group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv6AddressCollector_query>
 
-	<!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
-	<OCSlnkIPInterfaceToIPAddressCollector_query>
+    <!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
+    <OCSlnkIPInterfaceToIPAddressCollector_query>
         SELECT min(n.ID) as primary_key,
         n.MACADDR as ipinterface_id,
         n.IPADDRESS as ipaddress_id
@@ -565,9 +565,9 @@
         GROUP BY  ipinterface_id, ipaddress_id
     </OCSlnkIPInterfaceToIPAddressCollector_query>
 
-	<!--*********************** Printer ****************************-->
+    <!--*********************** Printer ****************************-->
 
-	<OCSPrinterCollector_with_listprinters_query>
+    <OCSPrinterCollector_with_listprinters_query>
         SELECT lp.ID as primary_key,
         lp.NAME as name,
         lp.ADDRESS as ip,
@@ -592,18 +592,18 @@
         AND p.port not like '%\_%'
     </OCSPrinterCollector_query>
 
-	<!--************************************************************-->
-	<!--************************ Software *************************-->
-	<!--************************************************************-->
+    <!--************************************************************-->
+    <!--************************ Software *************************-->
+    <!--************************************************************-->
 
-	<!--*********************** Software ***************************-->
-	<!-- select software in order to create version which doesn't exist in iTop-->
-	<OCSSoftwareCollector_getListFromItop>
+    <!--*********************** Software ***************************-->
+    <!-- select software in order to create version which doesn't exist in iTop-->
+    <OCSSoftwareCollector_getListFromItop>
         SELECT Software
     </OCSSoftwareCollector_getListFromItop>
 
-	<!-- Software -->
-	<OCSSoftwareCollector_query>
+    <!-- Software -->
+    <OCSSoftwareCollector_query>
         SELECT concat(s.name_id,'-',sv.ID) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
@@ -631,7 +631,7 @@
     </OCSSoftwareLicenceCollector_query>
 
     <!-- Software - with  use_software_categories-->
-	<OCSSoftwareCollector_with_categories_getListFromItop>
+    <OCSSoftwareCollector_with_categories_getListFromItop>
         SELECT OCSSoftwareCategory
         WHERE type !=''
   </OCSSoftwareCollector_with_categories_getListFromItop>
@@ -652,8 +652,8 @@
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareCollector_with_categories_query>
 
-	<!-- SoftwareLicence - with  use_software_categories-->
-	<OCSSoftwareLicenceCollector_with_categories_query>
+    <!-- SoftwareLicence - with  use_software_categories-->
+    <OCSSoftwareLicenceCollector_with_categories_query>
         SELECT distinct op.id as primary_key,
         op.GUID as name,
         concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
@@ -665,15 +665,15 @@
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareLicenceCollector_with_categories_query>
 
-	<!--********************** PCSoftware *************************-->
-	<!-- PCSoftware adds a link between CI and software of type PCSoftware on an existing software already in iTop-->
-	<OCSPCSoftwareCollector_getListFromItop>
+    <!--********************** PCSoftware *************************-->
+    <!-- PCSoftware adds a link between CI and software of type PCSoftware on an existing software already in iTop-->
+    <OCSPCSoftwareCollector_getListFromItop>
         SELECT Software
         WHERE type='PCSoftware'
     </OCSPCSoftwareCollector_getListFromItop>
 
-	<!-- PCSoftware -->
-	<OCSPCSoftwareCollector_query>
+    <!-- PCSoftware -->
+    <OCSPCSoftwareCollector_query>
         SELECT s.id as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
@@ -713,13 +713,13 @@
 
 
     <!-- PCSoftware - with  use_software_categories -->
-	<OCSPCSoftwareCollector_with_categories_getListFromItop>
+    <OCSPCSoftwareCollector_with_categories_getListFromItop>
         SELECT OCSSoftwareCategory
         WHERE type='PCSoftware'
     </OCSPCSoftwareCollector_with_categories_getListFromItop>
 
-	<!-- PCSoftware - with  use_software_categories without licence-->
-	<OCSPCSoftwareCollector_with_categories_query>
+    <!-- PCSoftware - with  use_software_categories without licence-->
+    <OCSPCSoftwareCollector_with_categories_query>
         SELECT s.id as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
@@ -740,8 +740,8 @@
     </OCSPCSoftwareCollector_with_categories_query>
 
 
-	<!-- PCSoftware -  with  use_software_categories and licence-->
-	<OCSPCSoftwareCollector_with_licence_with_categories_query>
+    <!-- PCSoftware -  with  use_software_categories and licence-->
+    <OCSPCSoftwareCollector_with_licence_with_categories_query>
         SELECT s.id as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
@@ -940,7 +940,7 @@
     </OCSDBServerCollector_query>
 
     <!-- DBServer - with  use_software_categories-->
-	<OCSDBServerCollector_with_categories_getListFromItop>
+    <OCSDBServerCollector_with_categories_getListFromItop>
         SELECT OCSSoftwareCategory
         WHERE type='DBServer'
     </OCSDBServerCollector_with_categories_getListFromItop>
@@ -965,130 +965,130 @@
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSDBServerCollector_with_categories_query>
 
-  <!--****************************************************************************-->
-  <!--***************** Launch sequence ******************************-->
-  <!--****************************************************************************-->
+    <!--****************************************************************************-->
+    <!--***************** Launch sequence ******************************-->
+    <!--****************************************************************************-->
 
-	<!-- Class collection sequence -->
-	<collectors_launch_sequence type="array">
+    <!-- Class collection sequence -->
+    <collectors_launch_sequence type="array">
         <!-- Warning: order is important for some classes-->
-		<collector>
+        <collector>
             <!-- Brand -->
-			<name>OCSBrandCollector</name>
+            <name>OCSBrandCollector</name>
             <enable>yes</enable>
             <rank>1</rank>
         </collector>
         <collector>
             <!-- OS Family -->
-	        <name>OCSOSFamilyCollector</name>
+            <name>OCSOSFamilyCollector</name>
             <enable>yes</enable>
             <rank>2</rank>
         </collector>
         <collector>
             <!-- OS Version  -->
-	        <name>OCSOSVersionCollector</name>
+            <name>OCSOSVersionCollector</name>
             <enable>yes</enable>
             <rank>3</rank>
         </collector>
         <collector>
             <!-- IP v4 Address -->
-	        <name>OCSIPv4AddressCollector</name>
+            <name>OCSIPv4AddressCollector</name>
             <enable>yes</enable>
             <rank>10</rank>
         </collector>
         <collector>
             <!-- IP v6 Address -->
-	        <name>OCSIPv6AddressCollector</name>
+            <name>OCSIPv6AddressCollector</name>
             <enable>yes</enable>
             <rank>11</rank>
         </collector>
         <collector>
             <!-- PC Model -->
-	        <name>OCSPCModelCollector</name>
+            <name>OCSPCModelCollector</name>
             <enable>yes</enable>
             <rank>20</rank>
         </collector>
         <collector>
             <!-- OS Licence -->
-	        <name>OCSOSLicenceCollector</name>
+            <name>OCSOSLicenceCollector</name>
             <enable>yes</enable>
             <rank>21</rank>
         </collector>
         <collector>
             <!-- PC -->
-	        <name>OCSPCCollector</name>
+            <name>OCSPCCollector</name>
             <enable>yes</enable>
             <rank>22</rank>
         </collector>
         <collector>
             <!--PC Physical Interface -->
-	        <name>OCSPCPhysicalInterfaceCollector</name>
+            <name>OCSPCPhysicalInterfaceCollector</name>
             <enable>yes</enable>
             <rank>23</rank>
         </collector>
         <collector>
             <!-- Server Model -->
-	        <name>OCSServerModelCollector</name>
+            <name>OCSServerModelCollector</name>
             <enable>yes</enable>
             <rank>30</rank>
         </collector>
         <collector>
             <!--  Server  -->
-	        <name>OCSServerCollector</name>
+            <name>OCSServerCollector</name>
             <enable>yes</enable>
             <rank>31</rank>
         </collector>
         <collector>
             <!-- Server Physical Interface -->
-	        <name>OCSServerPhysicalInterfaceCollector</name>
+            <name>OCSServerPhysicalInterfaceCollector</name>
             <enable>yes</enable>
             <rank>32</rank>
         </collector>
         <collector>
             <!--Virtual Machine -->
-	        <name>OCSVirtualMachineCollector</name>
+            <name>OCSVirtualMachineCollector</name>
             <enable>yes</enable>
             <rank>40</rank>
         </collector>
         <collector>
             <!--Logical Interface-->
-	        <name>OCSLogicalInterfaceCollector</name>
+            <name>OCSLogicalInterfaceCollector</name>
             <enable>yes</enable>
             <rank>41</rank>
         </collector>
         <collector>
             <!-- lnk IP Interface To IP Address -->
-	        <name>OCSlnkIPInterfaceToIPAddressCollector</name>
+            <name>OCSlnkIPInterfaceToIPAddressCollector</name>
             <enable>yes</enable>
             <rank>50</rank>
         </collector>
         <collector>
             <!-- Mobile Phone -->
-	        <name>OCSMobilePhoneCollector</name>
+            <name>OCSMobilePhoneCollector</name>
             <enable>yes</enable>
             <rank>51</rank>
         </collector>
         <collector>
             <!-- Printer -->
-	        <name>OCSPrinterCollector</name>
+            <name>OCSPrinterCollector</name>
             <enable>yes</enable>
             <rank>52</rank>
         </collector>
         <collector>
             <!-- Software -->
-	        <name>OCSSoftwareCollector</name>
+            <name>OCSSoftwareCollector</name>
             <enable>yes</enable>
             <rank>60</rank>
         </collector>
         <collector>
             <!-- SoftwareLicence -->
-	        <name>OCSSoftwareLicenceCollector</name>
+            <name>OCSSoftwareLicenceCollector</name>
             <enable>yes</enable>
             <rank>61</rank>
         </collector>
         <collector>
             <!-- Software Instance : PC Software -->
-	        <name>OCSPCSoftwareCollector</name>
+            <name>OCSPCSoftwareCollector</name>
             <enable>yes</enable>
             <rank>62</rank>
         </collector>
