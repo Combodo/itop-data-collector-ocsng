@@ -7,7 +7,7 @@ class OCSIPv4AddressCollector extends OCSIPAddressCollector
 {
     public function checkToLaunch():bool
     {
-        if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled() && Utils::GetConfigurationValue('collect_ips', 'no') == 'yes') {
+        if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled() && Utils::GetConfigurationValue('IPCollection', 'no') == 'yes') {
                 Utils::Log(LOG_INFO, 'IPs will be collected');
                 return true;
             }
