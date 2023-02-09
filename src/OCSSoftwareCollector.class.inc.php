@@ -5,6 +5,13 @@
  */
 class OCSSoftwareCollector extends AbstractOCSSoftwareCollector
 {
+	public function AttributeIsOptional($sAttCode)
+	{
+		if ($sAttCode == 'cvss') return true;
+
+		return parent::AttributeIsOptional($sAttCode);
+	}
+
     protected function GetTargetClass()
     {
         return 'Software';

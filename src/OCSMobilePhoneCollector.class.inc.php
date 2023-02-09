@@ -8,6 +8,13 @@ class OCSMobilePhoneCollector extends AbstractOCSCollector
     protected $oOSVersionLookup;
     protected $oModelLookup;
 
+	public function AttributeIsOptional($sAttCode)
+	{
+		if ($sAttCode == 'cvss') return true;
+
+		return parent::AttributeIsOptional($sAttCode);
+	}
+
     protected function MustProcessBeforeSynchro()
     {
         // We must reprocess the CSV data obtained from the inventory script

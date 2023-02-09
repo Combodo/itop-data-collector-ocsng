@@ -14,6 +14,7 @@ class OCSPCCollector extends AbstractOCSAssetCollector
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
+	    if ($sAttCode == 'cvss') return true;
         if ($sAttCode == 'softwarelicence_id') return true;
         if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
             // If the collector is connected to TeemIp standalone, there is no "providercontracts_list" on PCs. Let's safely ignore it.

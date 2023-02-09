@@ -20,6 +20,7 @@ class OCSServerCollector extends AbstractOCSAssetCollector
 
         // Backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
+	    if ($sAttCode == 'cvss') return true;
 
         if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
             // If the collector is connected to TeemIp standalone, there is no "providercontracts_list" on Servers. Let's safely ignore it.

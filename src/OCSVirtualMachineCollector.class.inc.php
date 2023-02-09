@@ -10,6 +10,7 @@ class OCSVirtualMachineCollector extends AbstractOCSAssetCollector
     {
         // For backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
+	    if ($sAttCode == 'cvss') return true;
 
         if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
             if ($sAttCode == 'providercontracts_list') return true;
