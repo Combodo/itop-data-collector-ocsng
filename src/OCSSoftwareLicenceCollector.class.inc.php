@@ -49,7 +49,7 @@ class OCSSoftwareLicenceCollector extends AbstractOCSCollector
 			    return false;
 		    }
 
-		    if ($this->TestIfTableExistsInOCS('officepack')){
+		    if (!$this->TestIfTableExistsInOCS('officepack')){
 			    Utils::Log(LOG_ERR, 'Office Pack plugin is not installed on OCS server. No office licence to collect.');
 			    return false;
 		    }
