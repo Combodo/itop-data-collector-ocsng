@@ -12,7 +12,9 @@ class OCSVirtualMachineCollector extends AbstractOCSAssetCollector
         if ($sAttCode == 'ocsid') return true;
 	    if ($sAttCode == 'cvss') return true;
 
-        if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
+	    if ($sAttCode == 'logicalvolumes_list') return true;
+
+	    if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
             if ($sAttCode == 'providercontracts_list') return true;
             if ($sAttCode == 'services_list') return true;
             if ($sAttCode == 'managementip') return true;

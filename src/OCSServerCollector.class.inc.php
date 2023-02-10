@@ -18,7 +18,10 @@ class OCSServerCollector extends AbstractOCSAssetCollector
         if ($sAttCode == 'powerA_id') return true;
         if ($sAttCode == 'powerB_id') return true;
 
-        // Backward comptability with previous versions which were adding an ocsid field
+	    if ($sAttCode == 'logicalvolumes_list') return true;
+
+
+	    // Backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
 	    if ($sAttCode == 'cvss') return true;
 
