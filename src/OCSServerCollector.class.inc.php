@@ -17,7 +17,8 @@ class OCSServerCollector extends AbstractOCSAssetCollector
         if ($sAttCode == 'rack_id') return true;
         if ($sAttCode == 'powerA_id') return true;
         if ($sAttCode == 'powerB_id') return true;
-
+	    if ($sAttCode == 'san_list') return true;
+	    if ($sAttCode == 'nb_u') return true;
 	    if ($sAttCode == 'logicalvolumes_list') return true;
 
 
