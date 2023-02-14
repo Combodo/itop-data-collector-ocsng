@@ -45,7 +45,7 @@ class OCSMobilePhoneCollector extends AbstractOCSCollector
         return 'MobilePhone';
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('MobilePhoneCollection', 'no') == 'yes') {
             return true;

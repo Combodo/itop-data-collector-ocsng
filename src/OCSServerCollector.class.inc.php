@@ -21,8 +21,7 @@ class OCSServerCollector extends AbstractOCSAssetCollector
 	    if ($sAttCode == 'nb_u') return true;
 	    if ($sAttCode == 'logicalvolumes_list') return true;
 
-
-	    // Backward comptability with previous versions which were adding an ocsid field
+        // Backward comptability with previous versions which were adding an ocsid field
         if ($sAttCode == 'ocsid') return true;
 	    if ($sAttCode == 'cvss') return true;
 
@@ -67,7 +66,7 @@ class OCSServerCollector extends AbstractOCSAssetCollector
        return 'Server';
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('ServerCollection', 'no') == 'yes') {
             return true;

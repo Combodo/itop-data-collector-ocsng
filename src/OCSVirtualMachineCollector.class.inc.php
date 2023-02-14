@@ -58,7 +58,7 @@ class OCSVirtualMachineCollector extends AbstractOCSAssetCollector
         return 'VirtualMachine';
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('VMCollection', 'no') == 'yes') {
             return true;

@@ -33,7 +33,7 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
         return 'PCSoftware';
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('SoftwareCollection', 'no') == 'yes') {
             return true;

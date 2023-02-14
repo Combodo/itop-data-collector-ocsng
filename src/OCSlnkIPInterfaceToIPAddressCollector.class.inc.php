@@ -26,7 +26,7 @@ class OCSlnkIPInterfaceToIPAddressCollector extends AbstractOCSCollector
 		$this->oIPInterfaceLookup->Lookup($aLineData, array('macaddress'), 'ipinterface_id', $iLineIndex);
 	}
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) && ( Utils::GetConfigurationValue('collect_ips', 'no') == 'yes')) {
             return true;

@@ -27,7 +27,7 @@ class OCSOSLicenceCollector extends AbstractOCSCollector
        $this->oOSVersionLookup->Lookup($aLineData,[ 'osversion_id'], 'osversion_id', $iLineIndex);
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
 	    if (Utils::GetConfigurationValue('MobilePhoneCollection', 'no') == 'yes'
 		    || Utils::GetConfigurationValue('PCCollection', 'no') == 'yes'

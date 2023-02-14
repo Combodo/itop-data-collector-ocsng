@@ -6,7 +6,7 @@
 class OCSPrinterCollector extends AbstractOCSCollector
 {
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('PrinterCollection', 'no') == 'yes') {
             return true;

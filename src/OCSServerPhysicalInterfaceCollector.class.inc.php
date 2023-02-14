@@ -6,7 +6,7 @@
 class OCSServerPhysicalInterfaceCollector extends AbstractOCSAssetCollector
 {
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('ServerCollection', 'no') == 'yes') {
             return true;

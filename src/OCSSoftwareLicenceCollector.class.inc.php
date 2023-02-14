@@ -7,7 +7,7 @@ class OCSSoftwareLicenceCollector extends AbstractOCSCollector
 {
 	protected function AddOtherParams(&$sQuery)
     {
-        $sQueryITop = Utils::GetConfigurationValue("OCSSoftware_getListFromItop", '');
+        $sQueryITop = Utils::GetConfigurationValue("OCSSoftwareCollector_getListFromItop", '');
         $oRestClient = new RestClient();
         $aResult = $oRestClient->Get("Software", $sQueryITop, "name, type");
 
@@ -40,7 +40,7 @@ class OCSSoftwareLicenceCollector extends AbstractOCSCollector
         return 'SoftwareLicence';
     }
 
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
 		if ( Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes' ) {
 

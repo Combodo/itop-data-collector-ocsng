@@ -5,7 +5,7 @@
  */
 class OCSOSFamilyCollector extends AbstractOCSCollector
 {
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
 	    if (Utils::GetConfigurationValue('MobilePhoneCollection', 'no') == 'yes'
 		    || Utils::GetConfigurationValue('PCCollection', 'no') == 'yes'

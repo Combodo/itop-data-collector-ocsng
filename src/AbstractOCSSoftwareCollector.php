@@ -66,7 +66,7 @@ abstract class AbstractOCSSoftwareCollector extends AbstractOCSCollector
 	    Utils::Log(LOG_DEBUG, $sQuery);
     }
 
-	public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
 	{
 		if (Utils::GetConfigurationValue('SoftwareCollection', 'no') == 'yes') {
 			return true;

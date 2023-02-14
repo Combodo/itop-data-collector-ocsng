@@ -5,7 +5,7 @@
  */
 class OCSPCPhysicalInterfaceCollector extends AbstractOCSAssetCollector
 {
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('PCCollection', 'no') == 'yes') {
             return true;

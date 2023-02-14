@@ -5,7 +5,7 @@
  */
 class OCSIPv6AddressCollector extends OCSIPAddressCollector
 {
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()
 	        && Utils::GetConfigurationValue('IPCollection', 'no') == 'yes'

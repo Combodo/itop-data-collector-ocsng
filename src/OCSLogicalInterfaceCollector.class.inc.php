@@ -5,7 +5,7 @@
  */
 class OCSLogicalInterfaceCollector extends AbstractOCSAssetCollector
 {
-    public function checkToLaunch():bool
+	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('VMCollection', 'no') == 'yes') {
             return true;
