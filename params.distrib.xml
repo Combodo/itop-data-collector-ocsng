@@ -384,6 +384,35 @@
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
 	<!--********************* MobilePhone **************************-->
+
+    <!--******************** Model for Mobile Phone *************************-->
+    <!-- Model for MobilePhone -->
+    <OCSMobilePhoneModelCollector_query>
+        SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
+        SMANUFACTURER as brand_id,
+        SMODEL as name,
+        'MobilePhone' As type
+        FROM bios b
+        WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
+    </OCSMobilePhoneModelCollector_query>
+
+    <!-- Model for MobilePhone - with  use_asset_categories -->
+    <OCSMobilePhoneModelCollector_getCategoriesFromItop>
+        SELECT  OCSAssetCategory
+        WHERE target_class='MobilePhone'
+    </OCSMobilePhoneModelCollector_getCategoriesFromItop>
+
+    <OCSMobilePhoneModelCollector_with_categories_query>
+        SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
+        SMANUFACTURER as brand_id,
+        SMODEL as name,
+        'PC' As type
+        FROM bios AS b
+        JOIN hardware AS h ON h.id=b.hardware_id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE ac.category_name in ('$categorielist$')
+    </OCSMobilePhoneModelCollector_with_categories_query>
+
 	<!-- MobilePhone  -->
 	<OCSMobilePhoneCollector_query>
         SELECT h.ID as primary_key,
@@ -598,7 +627,8 @@
 
 	<!--*********************** Software ***************************-->
 	<!-- select software in order to create version which doesn't exist in iTop-->
-	<OCSSoftwareCollector_getListFromItop>
+    <!-- select software in order to create version which doesn't exist in iTop-->
+    <OCSSoftwareCollector_getListFromItop>
         SELECT Software
     </OCSSoftwareCollector_getListFromItop>
 
@@ -1061,6 +1091,12 @@
             <!-- lnk IP Interface To IP Address -->
 	        <name>OCSlnkIPInterfaceToIPAddressCollector</name>
             <enable>yes</enable>
+            <rank>45</rank>
+        </collector>
+        <collector>
+            <!-- Mobile Phone Model -->
+            <name>OCSMobilePhoneModelCollector</name>
+            <enable>yes</enable>
             <rank>50</rank>
         </collector>
         <collector>
@@ -1073,7 +1109,7 @@
             <!-- Printer -->
 	        <name>OCSPrinterCollector</name>
             <enable>yes</enable>
-            <rank>52</rank>
+            <rank>55</rank>
         </collector>
         <collector>
             <!-- Software -->

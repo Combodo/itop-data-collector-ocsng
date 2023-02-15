@@ -7,7 +7,7 @@ class OCSServerModelCollector extends AbstractOCSAssetCollector
 {
     protected function GetTargetClass()
     {
-        return 'Server';
+        return 'Model';
     }
 
 	public function CheckToLaunch(array $aOrchestratedCollectors): bool

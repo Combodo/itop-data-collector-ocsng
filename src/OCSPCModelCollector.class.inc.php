@@ -7,7 +7,7 @@ class OCSPCModelCollector extends AbstractOCSAssetCollector
 {
     protected function GetTargetClass()
     {
-        return 'PC';
+        return 'Model';
     }
 
 	public function CheckToLaunch(array $aOrchestratedCollectors): bool
