@@ -6,6 +6,17 @@
 class OCSPrinterCollector extends AbstractOCSCollector
 {
 
+	public function AttributeIsOptional($sAttCode)
+	{
+		if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
+			if ($sAttCode == 'providercontracts_list') return true;
+			if ($sAttCode == 'services_list') return true;
+			if ($sAttCode == 'tickets_list') return true;
+		}
+
+		return parent::AttributeIsOptional($sAttCode);
+	}
+
 	public function CheckToLaunch(array $aOrchestratedCollectors): bool
     {
         if (Utils::GetConfigurationValue('PrinterCollection', 'no') == 'yes') {

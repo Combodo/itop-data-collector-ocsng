@@ -11,6 +11,9 @@ class OCSMobilePhoneCollector extends AbstractOCSCollector
 	public function AttributeIsOptional($sAttCode)
 	{
 		if ($sAttCode == 'cvss') return true;
+		if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
+			if ($sAttCode == 'providercontracts_list') return true;
+		}
 
 		return parent::AttributeIsOptional($sAttCode);
 	}

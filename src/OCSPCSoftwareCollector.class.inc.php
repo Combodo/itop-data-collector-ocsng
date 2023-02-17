@@ -15,6 +15,17 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
         }
     }
 
+	public function AttributeIsOptional($sAttCode)
+	{
+		if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
+			if ($sAttCode == 'providercontracts_list') return true;
+			if ($sAttCode == 'services_list') return true;
+			if ($sAttCode == 'tickets_list') return true;
+		}
+
+		return parent::AttributeIsOptional($sAttCode);
+	}
+
 	protected function GetSQLQueryName()
     {
         $sSQLQueryName = "_query";

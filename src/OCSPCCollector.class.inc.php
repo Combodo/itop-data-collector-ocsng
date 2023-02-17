@@ -20,6 +20,7 @@ class OCSPCCollector extends AbstractOCSAssetCollector
             // If the collector is connected to TeemIp standalone, there is no "providercontracts_list" on PCs. Let's safely ignore it.
             if ($sAttCode == 'providercontracts_list') return true;
             if ($sAttCode == 'services_list') return true;
+	        if ($sAttCode == 'tickets_list') return true;
         } else {
             if ($sAttCode == 'ipaddress_id') return true;
         }

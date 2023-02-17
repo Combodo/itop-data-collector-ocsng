@@ -18,6 +18,7 @@ class OCSVirtualMachineCollector extends AbstractOCSAssetCollector
             if ($sAttCode == 'providercontracts_list') return true;
             if ($sAttCode == 'services_list') return true;
             if ($sAttCode == 'managementip') return true;
+		    if ($sAttCode == 'tickets_list') return true;
         } else {
             if ($sAttCode == 'managementip_id') return true;
         }

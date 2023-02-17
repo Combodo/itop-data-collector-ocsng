@@ -20,6 +20,7 @@ class OCSServerPhysicalInterfaceCollector extends AbstractOCSAssetCollector
            if ($sAttCode == 'ipaddress') return true;
            if ($sAttCode == 'ipgateway') return true;
            if ($sAttCode == 'ipmask') return true;
+	       if ($sAttCode == 'speed') return true;
        } else {
            if ($sAttCode == 'ip_list') return true;
            if ($sAttCode == 'vrfs_list') return true;
