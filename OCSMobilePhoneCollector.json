@@ -138,6 +138,20 @@
 			"finalclass": "SynchroAttExtKey"
 		},
 		{
+			"attcode": "status",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
+			"attcode": "serialnumber",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
 			"attcode": "phonenumber",
 			"update": "1",
 			"reconcile": "0",
@@ -187,6 +201,13 @@
 		},
 		{
 			"attcode": "ocs_id",
+			"update": "1",
+			"reconcile": "0",
+			"update_policy": "master_locked",
+			"finalclass": "SynchroAttribute"
+		},
+		{
+			"attcode": "cvss",
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",

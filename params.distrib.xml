@@ -406,7 +406,7 @@
         SELECT DISTINCT CONCAT(SMANUFACTURER,SMODEL) AS primary_key,
         SMANUFACTURER as brand_id,
         SMODEL as name,
-        'PC' As type
+        'MobilePhone' As type
         FROM bios AS b
         JOIN hardware AS h ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
@@ -437,7 +437,7 @@
 	<!-- MobilePhone - with categories -->
     <OCSMobilePhoneCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
-        WHERE target_class='MobilePhone'
+        WHERE target_class = 'MobilePhone'
     </OCSMobilePhoneCollector_getCategoriesFromItop>
 
 	<OCSMobilePhoneCollector_with_categories_query>
@@ -1115,55 +1115,55 @@
             <!-- Software -->
 	        <name>OCSSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>60</rank>
+            <rank>200</rank>
         </collector>
         <collector>
             <!-- SoftwareLicence -->
 	        <name>OCSSoftwareLicenceCollector</name>
             <enable>yes</enable>
-            <rank>61</rank>
+            <rank>201</rank>
         </collector>
         <collector>
             <!-- Software Instance : PC Software -->
 	        <name>OCSPCSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>62</rank>
+            <rank>202</rank>
         </collector>
         <collector>
             <!-- Software Instance : DB Server-->
             <name>OCSDBServerCollector</name>
             <enable>yes</enable>
-            <rank>63</rank>
+            <rank>203</rank>
         </collector>
         <collector>
             <!-- Software Instance : Middleware-->
             <name>OCSMiddlewareCollector</name>
             <enable>yes</enable>
-            <rank>64</rank>
+            <rank>204</rank>
         </collector>
         <collector>
             <!-- Software Instance : Other Software-->
             <name>OCSOtherSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>65</rank>
+            <rank>205</rank>
         </collector>
         <collector>
             <!-- Software Instance : Web server-->
             <name>OCSWebServerCollector</name>
             <enable>yes</enable>
-            <rank>66</rank>
+            <rank>206</rank>
         </collector>
         <collector>
             <!-- Asset Category-->
             <name>OCSAssetCategoryCollector</name>
             <enable>yes</enable>
-            <rank>80</rank>
+            <rank>300</rank>
         </collector>
         <collector>
             <!-- Software Category-->
             <name>OCSSoftwareCategoryCollector</name>
             <enable>yes</enable>
-            <rank>81</rank>
+            <rank>301</rank>
         </collector>
     </collectors_launch_sequence>
 </parameters>

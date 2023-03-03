@@ -29,7 +29,7 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
 
              if(is_null($aResult['objects']))
             {
-                Utils::Log(LOG_ERR, "No OCSAssetCategory found in iTop.");
+                Utils::Log(LOG_INFO, "No OCSAssetCategory found in iTop with request: ".$sSQLQueryName);
                 return;
             }
             $aListCategories = [];

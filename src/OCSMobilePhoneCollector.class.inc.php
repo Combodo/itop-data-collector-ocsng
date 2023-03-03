@@ -3,7 +3,7 @@
  * @copyright   Copyright (C) 2010-2023 Combodo SARL
  * @license     http://opensource.org/licenses/AGPL-3.0
  */
-class OCSMobilePhoneCollector extends AbstractOCSCollector
+class OCSMobilePhoneCollector extends AbstractOCSAssetCollector
 {
     protected $oOSVersionLookup;
     protected $oModelLookup;
