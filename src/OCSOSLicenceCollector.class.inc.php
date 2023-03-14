@@ -33,7 +33,7 @@ class OCSOSLicenceCollector extends AbstractOCSCollector
 		    || Utils::GetConfigurationValue('PCCollection', 'no') == 'yes'
 		    || Utils::GetConfigurationValue('ServerCollection', 'no') == 'yes'
 		    || Utils::GetConfigurationValue('VMCollection', 'no') == 'yes') {
-		    return true;
+				    return true;
 	    }
 	    return false;
     }

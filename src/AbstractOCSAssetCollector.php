@@ -27,8 +27,7 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
             $oRestClient = new RestClient();
             $aResult = $oRestClient->Get("OCSAssetCategory", $sQueryITop, "name");
 
-             if(is_null($aResult['objects']))
-            {
+             if(is_null($aResult['objects'])) {
                 Utils::Log(LOG_INFO, "No OCSAssetCategory found in iTop with request: ".$sSQLQueryName);
                 return;
             }

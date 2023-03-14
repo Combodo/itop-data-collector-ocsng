@@ -10,7 +10,7 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
     public function Init(): void
     {
         parent::Init();
-        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') {
+        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes' && $this->TestIfTableExistsInOCS('officepack')) {
             $this->aFields['softwarelicence_id']['update'] = true;
         }
     }
@@ -32,7 +32,7 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
         if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
             $sSQLQueryName = "_with_categories".$sSQLQueryName;
         }
-        if (Utils::GetConfigurationValue("LicenceCollection", 'no') == 'yes') {
+        if ($this->aFields['softwarelicence_id']['update']) {
             $sSQLQueryName = "_with_licence".$sSQLQueryName;
         }
         Utils::Log(LOG_DEBUG, 'sSQLQueryName'.$sSQLQueryName);

@@ -66,15 +66,27 @@
 
     <OCSVirtualMachineCollector_nullified_attributes type="array">
         <attribute>cvss</attribute>
-    </OCSVirtualMachineCollector_nullified_attributes >
+    </OCSVirtualMachineCollector_nullified_attributes>
 
     <OCSSoftwareCollector_nullified_attributes type="array">
         <attribute>cvss</attribute>
-    </OCSSoftwareCollector_nullified_attributes >
+    </OCSSoftwareCollector_nullified_attributes>
 
-    <!--****************************************************************************-->
-    <!--****** Requests used for synchronization Both in OCS and iTop ********-->
-    <!--****************************************************************************-->
+    <OCSPCPhysicalInterfaceCollector_nullified_attributes type="array">
+        <attribute>speed</attribute>
+    </OCSPCPhysicalInterfaceCollector_nullified_attributes>
+
+    <OCSServerPhysicalInterfaceCollector_nullified_attributes type="array">
+        <attribute>speed</attribute>
+    </OCSServerPhysicalInterfaceCollector_nullified_attributes>
+
+     <OCSLogicalInterfaceCollector_nullified_attributes type="array">
+        <attribute>speed</attribute>
+    </OCSLogicalInterfaceCollector_nullified_attributes>
+
+  <!--****************************************************************************-->
+  <!--****** Requests used for synchronization Both in OCS and iTop ********-->
+  <!--****************************************************************************-->
 
     <!--************************ Categories *******************************-->
     <!-- AssetCategory -->
@@ -176,7 +188,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -206,7 +218,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -220,7 +232,14 @@
     <OCSServerPhysicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -243,7 +262,14 @@
     <OCSServerPhysicalInterfaceCollector_with_categories_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -302,7 +328,7 @@
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         h.IPADDR as ipaddress_id,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -331,7 +357,7 @@
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         h.IPADDR as ipaddress_id,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -346,7 +372,14 @@
     <OCSPCPhysicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -369,7 +402,14 @@
     <OCSPCPhysicalInterfaceCollector_with_categories_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -424,7 +464,7 @@
         b.SMODEL as model_id,
         b.SSN as serialnumber,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id,
         s.phonenumber as phonenumber
@@ -450,7 +490,7 @@
         b.SMODEL as model_id,
         b.SSN as serialnumber,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id,
         s.phonenumber as phonenumber
@@ -475,7 +515,7 @@
         h.IPADDR as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -501,7 +541,7 @@
         h.IPADDR as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        (select max(cvss) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
+        (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
@@ -516,7 +556,14 @@
 	<OCSLogicalInterfaceCollector_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -528,8 +575,8 @@
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
     </OCSLogicalInterfaceCollector_query>
 
-	<!-- LogicalInterface for VirtualMachine -->
-    <OCSLogicalInterfaceCollector_getCategoriesFromItop>
+  <!-- LogicalInterface for VirtualMachine -->
+  <OCSLogicalInterfaceCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='VirtualMachine'
     </OCSLogicalInterfaceCollector_getCategoriesFromItop>
@@ -537,7 +584,14 @@
 	<OCSLogicalInterfaceCollector_with_categories_query>
         SELECT n.ID as primary_key,
         n.DESCRIPTION as name,
-        IF(n.SPEED REGEXP '^[0-9]+ ', LEFT(n.SPEED, LOCATE(' ', n.SPEED)), n.SPEED) as speed,
+        IF(n.SPEED REGEXP '^[0-9]+ ',
+              CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
+                WHEN 'G' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))*1000
+                WHEN 'M' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))
+                WHEN 'b' THEN LEFT(n.SPEED, LOCATE(' ', n.SPEED))/1000
+              ELSE null
+              END,
+              IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
         n.IPADDRESS as ipaddress,
         n.IPMASK as ipmask,
@@ -638,7 +692,7 @@
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
-       (select max(cvss) from cve_search_computer sc where sc.hardware_id=h.id) as cvss,
+       (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=h.id) as cvss,
         '$type_id$' as type
         FROM software_name sn
         JOIN software s ON s.NAME_ID = sn.ID
@@ -671,15 +725,15 @@
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
-       (select max(cvss) from cve_search_computer sc where sc.hardware_id=h.id) as cvss,
+       (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=h.id) as cvss,
         '$type_id$' as type
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
-        JOIN ocs.software_publisher sp ON sp.ID = s.PUBLISHER_ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareCollector_with_categories_query>
 
@@ -736,7 +790,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID
+        LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
         WHERE sn.NAME in ('$softwarelist$')
@@ -760,13 +814,13 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_categories_query>
 
@@ -782,14 +836,17 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         op.GUID as softwarelicence_id
-        FROM software_name sn
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
         JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN software_version sv ON sv.ID =s.VERSION_ID
-        LEFT JOIN ocs.officepack op ON h.ID= op.HARDWARE_ID
+        LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
-        WHERE sn.NAME in ('$softwarelist$')
+        WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_licence_with_categories_query>
 
     <!--********************** WebServer *************************-->
@@ -833,13 +890,13 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSWebServerCollector_with_categories_query>
 
@@ -884,13 +941,13 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSOtherSoftwareCollector_with_categories_query>
 
@@ -935,13 +992,13 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSMiddlewareCollector_with_categories_query>
 
@@ -986,13 +1043,13 @@
         '$default_active_status$' as status,
         '$default_org_id$' as org_id,
         null as softwarelicence_id
-        FROM ocs.software_categories sc
-        JOIN ocs.software_categories_link sl ON sc.ID =sl.category_ID
-        JOIN ocs.software_name sn ON sl.NAME_ID = sn.ID
-        JOIN ocs.software_version sv ON sv.ID =sl.VERSION_ID
-        JOIN ocs.software s ON s.NAME_ID = sn.ID
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
-        JOIN ocs.hardware h ON h.ID= s.HARDWARE_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSDBServerCollector_with_categories_query>
 
@@ -1115,55 +1172,55 @@
             <!-- Software -->
 	        <name>OCSSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>200</rank>
+            <rank>100</rank>
         </collector>
         <collector>
             <!-- SoftwareLicence -->
 	        <name>OCSSoftwareLicenceCollector</name>
             <enable>yes</enable>
-            <rank>201</rank>
+            <rank>101</rank>
         </collector>
         <collector>
             <!-- Software Instance : PC Software -->
 	        <name>OCSPCSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>202</rank>
+            <rank>102</rank>
         </collector>
         <collector>
             <!-- Software Instance : DB Server-->
             <name>OCSDBServerCollector</name>
             <enable>yes</enable>
-            <rank>203</rank>
+            <rank>103</rank>
         </collector>
         <collector>
             <!-- Software Instance : Middleware-->
             <name>OCSMiddlewareCollector</name>
             <enable>yes</enable>
-            <rank>204</rank>
+            <rank>104</rank>
         </collector>
         <collector>
             <!-- Software Instance : Other Software-->
             <name>OCSOtherSoftwareCollector</name>
             <enable>yes</enable>
-            <rank>205</rank>
+            <rank>105</rank>
         </collector>
         <collector>
             <!-- Software Instance : Web server-->
             <name>OCSWebServerCollector</name>
             <enable>yes</enable>
-            <rank>206</rank>
+            <rank>106</rank>
         </collector>
         <collector>
             <!-- Asset Category-->
             <name>OCSAssetCategoryCollector</name>
             <enable>yes</enable>
-            <rank>300</rank>
+            <rank>200</rank>
         </collector>
         <collector>
             <!-- Software Category-->
             <name>OCSSoftwareCategoryCollector</name>
             <enable>yes</enable>
-            <rank>301</rank>
+            <rank>201</rank>
         </collector>
     </collectors_launch_sequence>
 </parameters>
