@@ -340,7 +340,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        IF(h.IPADDR REGEXP '^[0-9a-f.:\\]{2,45}$',h.IPADDR,null) as ipaddress_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as ipaddress_id,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
