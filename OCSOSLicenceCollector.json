@@ -66,7 +66,7 @@
     {
       "attcode": "osversion_id",
       "update": "1",
-      "reconcile": "0",
+      "reconcile": "1",
       "update_policy": "master_locked",
       "reconciliation_attcode": "id",
       "finalclass": "SynchroAttExtKey"

@@ -113,6 +113,7 @@
         SELECT DISTINCT SMANUFACTURER as primary_key,
         SMANUFACTURER as name
         FROM bios
+        WHERE SMANUFACTURER != ''
     </OCSBrandCollector_query>
 
 	<!-- OSFamily -->
@@ -120,6 +121,7 @@
         SELECT DISTINCT OSNAME as primary_key,
         OSNAME as name
         FROM hardware
+        WHERE OSNAME != ''
     </OCSOSFamilyCollector_query>
 
 	<!-- OSVersion -->
@@ -128,6 +130,7 @@
         OSNAME as osfamily_id,
         OSVERSION as name
         FROM hardware
+        WHERE OSVERSION != ''
     </OCSOSVersionCollector_query>
 
 	<!-- OSLicence - windows only-->
@@ -152,6 +155,7 @@
         FROM bios
         WHERE TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
         AND SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+        AND SMODEL != ''
     </OCSServerModelCollector_query>
 
 	<!-- Model for Servers - with  use_asset_categories-->
@@ -169,6 +173,7 @@
         JOIN hardware AS h ON h.id = b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
+        AND SMODEL != ''
     </OCSServerModelCollector_with_categories_query>
 
     <!--*********************** Server *****************************-->
@@ -181,8 +186,8 @@
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
-        h.IPADDR as managementip,
-        h.IPADDR as managementip_id,
+        IF(h.IPADDR REGEXP '^[0-9.]{7,15}$',h.IPADDR,null) as managementip,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as managementip_id,
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
@@ -193,6 +198,7 @@
         '$default_org_id$' as org_id
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
         AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
     </OCSServerCollector_query>
@@ -211,8 +217,8 @@
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
-        h.IPADDR as managementip,
-        h.IPADDR as managementip_id,
+        IF(h.IPADDR REGEXP '^[0-9.]{7,15}$',h.IPADDR,null) as managementip,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as managementip_id,
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
@@ -224,6 +230,7 @@
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
     </OCSServerCollector_with_categories_query>
 
@@ -241,16 +248,18 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
         FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
         AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
+        AND n.DESCRIPTION!=''
     </OCSServerPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for Server  -->
@@ -271,16 +280,18 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
         FROM  (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND n.DESCRIPTION!=''
     </OCSServerPhysicalInterfaceCollector_with_categories_query>
 
     <!--******************** Model for PC *************************-->
@@ -293,6 +304,7 @@
         FROM bios
         WHERE TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
         AND SMANUFACTURER NOT LIKE 'VMware%'
+        AND SMODEL != ''
     </OCSPCModelCollector_query>
 
 	<!-- Model for PC - with  use_asset_categories -->
@@ -310,6 +322,7 @@
         JOIN hardware AS h ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
+        AND SMODEL != ''
     </OCSPCModelCollector_with_categories_query>
 
 	<!--************************ PC *******************************-->
@@ -327,12 +340,13 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        h.IPADDR as ipaddress_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:\\]{2,45}$',h.IPADDR,null) as ipaddress_id,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
         AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
     </OCSPCCollector_query>
@@ -356,13 +370,14 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        h.IPADDR as ipaddress_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as ipaddress_id,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
     </OCSPCCollector_with_categories_query>
 
@@ -381,16 +396,18 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
         FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
         AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
+        AND n.DESCRIPTION!=''
     </OCSPCPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for PC with categories -->
@@ -411,16 +428,18 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
         FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND n.DESCRIPTION!=''
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
 	<!--********************* MobilePhone **************************-->
@@ -434,6 +453,7 @@
         'MobilePhone' As type
         FROM bios b
         WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
+        AND SMODEL != ''
     </OCSMobilePhoneModelCollector_query>
 
     <!-- Model for MobilePhone - with  use_asset_categories -->
@@ -451,6 +471,7 @@
         JOIN hardware AS h ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
+        AND SMODEL != ''
     </OCSMobilePhoneModelCollector_with_categories_query>
 
 	<!-- MobilePhone  -->
@@ -471,6 +492,7 @@
         FROM hardware AS h
         JOIN bios AS b ON b.hardware_id = h.id
         JOIN sim AS s ON s.hardware_id = h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
     </OCSMobilePhoneCollector_query>
 
@@ -498,6 +520,7 @@
         JOIN bios AS b ON b.hardware_id = h.id
         JOIN sim AS s ON s.hardware_id = h.id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
     </OCSMobilePhoneCollector_with_categories_query>
 
@@ -511,8 +534,8 @@
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
-        h.IPADDR as managementip,
-        h.IPADDR as managementip_id,
+        IF( h.IPADDR REGEXP '^[0-9.]{7,15}$', h.IPADDR, null) as managementip,
+        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$', h.IPADDR, null) as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
@@ -520,6 +543,7 @@
         '$default_org_id$' as org_id
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
     </OCSVirtualMachineCollector_query>
 
@@ -537,8 +561,8 @@
         h.OSVERSION as osversion_id,
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
-        h.IPADDR as managementip,
-        h.IPADDR as managementip_id,
+        IF( h.IPADDR REGEXP '^[0-9.]{7,15}$', h.IPADDR, null) as managementip,
+        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$', h.IPADDR, null) as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
@@ -547,6 +571,7 @@
         FROM hardware AS h
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
     </OCSVirtualMachineCollector_with_categories_query>
 
@@ -565,14 +590,16 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as virtualmachine_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
+        AND n.DESCRIPTION!=''
     </OCSLogicalInterfaceCollector_query>
 
   <!-- LogicalInterface for VirtualMachine -->
@@ -593,15 +620,17 @@
               END,
               IF(n.SPEED REGEXP '^[0-9.]+$', n.SPEED, null)) as speed,
         n.MACADDR as macaddress,
-        n.IPADDRESS as ipaddress,
-        n.IPMASK as ipmask,
-        n.IPGATEWAY as ipgateway,
+        IF(n.IPADDRESS REGEXP '^[0-9.]{7,15}$',n.IPADDRESS,null) as ipaddress,
+        IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
+        IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as virtualmachine_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND n.DESCRIPTION!=''
     </OCSLogicalInterfaceCollector_with_categories_query>
 
 	<!--************************ IP *******************************-->
@@ -610,13 +639,14 @@
 	<OCSIPv4AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
-        n.IPADDRESS as ip,
+        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ip,
         '$default_ip_status$' as status,
          IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE IF(n.IPADDRESS REGEXP '^[:]', false, true)
         AND n.IPADDRESS!=''
         group by org_id,  ip,  status,  short_name,  view_id
@@ -626,13 +656,14 @@
 	<OCSIPv6AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
-        n.IPADDRESS as ip,
+        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ip,
         '$default_ip_status$' as status,
         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE IF(n.IPADDRESS REGEXP '^[:]', true, false)
         AND n.IPADDRESS!=''
         group by org_id,  ip,  status,  short_name,  view_id
@@ -642,7 +673,7 @@
 	<OCSlnkIPInterfaceToIPAddressCollector_query>
         SELECT min(n.ID) as primary_key,
         n.MACADDR as ipinterface_id,
-        n.IPADDRESS as ipaddress_id
+        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ipaddress_id
         FROM networks AS n
         WHERE n.IPADDRESS != ''
         GROUP BY  ipinterface_id, ipaddress_id
@@ -699,6 +730,7 @@
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
         JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn .name IN ('$softwarelist$')
     </OCSSoftwareCollector_query>
 
@@ -734,6 +766,7 @@
         JOIN software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareCollector_with_categories_query>
 
@@ -772,6 +805,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_query>
 
@@ -793,6 +827,7 @@
         LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_licence_query>
 
@@ -821,6 +856,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_categories_query>
 
@@ -846,6 +882,7 @@
         LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_licence_with_categories_query>
 
@@ -871,6 +908,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSWebServerCollector_query>
 
@@ -897,6 +935,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSWebServerCollector_with_categories_query>
 
@@ -922,6 +961,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSOtherSoftwareCollector_query>
 
@@ -948,6 +988,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSOtherSoftwareCollector_with_categories_query>
 
@@ -973,6 +1014,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSMiddlewareCollector_query>
 
@@ -999,6 +1041,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSMiddlewareCollector_with_categories_query>
 
@@ -1024,6 +1067,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSDBServerCollector_query>
 
@@ -1050,6 +1094,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSDBServerCollector_with_categories_query>
 

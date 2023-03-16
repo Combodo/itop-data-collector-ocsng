@@ -47,7 +47,7 @@ class OCSVirtualMachineCollector extends AbstractOCSAssetCollector
     protected function ProcessLineBeforeSynchro(&$aLineData, $iLineIndex)
     {
         // Process each line of the CSV
-        $this->oOSVersionLookup->Lookup($aLineData, array('osfamily_id', 'osversion_id'), 'osversion_id', $iLineIndex);
+        $this->oOSVersionLookup->Lookup($aLineData, array('osfamily_id', 'osversion_id'), 'osversion_id', $iLineIndex, true);
         $this->oOSLicenceLookup->Lookup($aLineData, array('osversion_id', 'oslicence_id'), 'oslicence_id', $iLineIndex, true);
         if ($this->GetOCSCollectionPlan()->IsTeemIpInstalled()) {
             $this->oIPAddressLookup->Lookup($aLineData, array('org_id', 'managementip_id'), 'managementip_id', $iLineIndex);
