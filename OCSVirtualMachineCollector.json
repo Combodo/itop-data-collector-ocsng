@@ -93,7 +93,7 @@
 			"update": "1",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "id",
+			"reconciliation_attcode": "friendlyname",
 			"finalclass": "SynchroAttExtKey"
 		},
 		{
