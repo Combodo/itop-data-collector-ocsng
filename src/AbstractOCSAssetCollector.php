@@ -24,7 +24,7 @@ abstract class AbstractOCSAssetCollector extends AbstractOCSCollector
 		        $sQueryITop = Utils::GetConfigurationValue(strtolower(get_class($this)) . $sSQLQueryName, '');
 	        }
 
-            $oRestClient = new RestClient();
+	        $oRestClient = new RestClient();
             $aResult = $oRestClient->Get("OCSAssetCategory", $sQueryITop, "name");
 
              if(is_null($aResult['objects'])) {

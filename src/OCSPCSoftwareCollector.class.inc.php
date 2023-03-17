@@ -30,7 +30,14 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
     {
         $sSQLQueryName = "_query";
         if (Utils::GetConfigurationValue("use_software_categories", 'no') == 'yes') {
-            $sSQLQueryName = "_with_categories".$sSQLQueryName;
+	        if (Utils::GetConfigurationValue("use_asset_categories", 'no') == 'yes')
+	        {
+		        $sSQLQueryName = '_with_2categories'.$sSQLQueryName;
+	        }
+	        else
+	        {
+		        $sSQLQueryName = '_with_categories'.$sSQLQueryName;
+	        }
         }
         if ($this->aFields['softwarelicence_id']['update']) {
             $sSQLQueryName = "_with_licence".$sSQLQueryName;

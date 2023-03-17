@@ -114,14 +114,17 @@
         SMANUFACTURER as name
         FROM bios
         WHERE SMANUFACTURER != ''
+        AND SSN!=''
     </OCSBrandCollector_query>
 
 	<!-- OSFamily -->
 	<OCSOSFamilyCollector_query>
         SELECT DISTINCT OSNAME as primary_key,
         OSNAME as name
-        FROM hardware
+        FROM hardware AS h
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE ssn!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE OSNAME != ''
+        AND SSN!=''
     </OCSOSFamilyCollector_query>
 
 	<!-- OSVersion -->
@@ -129,7 +132,8 @@
         SELECT DISTINCT CONCAT(OSNAME,OSVERSION) as primary_key,
         OSNAME as osfamily_id,
         OSVERSION as name
-        FROM hardware
+        FROM hardware AS h
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE ssn!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE OSVERSION != ''
     </OCSOSVersionCollector_query>
 
@@ -141,7 +145,8 @@
         h.WINPRODKEY as licence_key,
         h.OSCOMMENTS as description,
         '$default_org_id$' as org_id
-        FROM hardware h
+        FROM hardware AS h
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE ssn!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE WINPRODID is not null
     </OCSOSLicenceCollector_query>
 
@@ -158,8 +163,8 @@
         AND SMODEL != ''
     </OCSServerModelCollector_query>
 
-	<!-- Model for Servers - with  use_asset_categories-->
-    <OCSServerModelCollector_getCategoriesFromItop>
+  <!-- Model for Servers - with  use_asset_categories-->
+  <OCSServerModelCollector_getCategoriesFromItop>
         SELECT  OCSAssetCategory
         WHERE target_class='Server'
     </OCSServerModelCollector_getCategoriesFromItop>
@@ -174,6 +179,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
         AND SMODEL != ''
+        AND SSN!=''
     </OCSServerModelCollector_with_categories_query>
 
     <!--*********************** Server *****************************-->
@@ -201,6 +207,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
         AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+        AND b.SSN!=''
     </OCSServerCollector_query>
 
     <!-- Server  -->
@@ -232,6 +239,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND b.SSN!=''
     </OCSServerCollector_with_categories_query>
 
     <!--******************** Physical Interface for server **********************-->
@@ -260,6 +268,7 @@
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
         AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSServerPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for Server  -->
@@ -292,6 +301,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSServerPhysicalInterfaceCollector_with_categories_query>
 
     <!--******************** Model for PC *************************-->
@@ -349,6 +359,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
         AND b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
+        AND b.SSN!=''
     </OCSPCCollector_query>
 
 	<!-- PC - with categories -->
@@ -379,6 +390,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND b.SSN!=''
     </OCSPCCollector_with_categories_query>
 
 
@@ -408,6 +420,7 @@
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci NOT LIKE 'VMware%'
         AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSPCPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for PC with categories -->
@@ -440,6 +453,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
 	<!--********************* MobilePhone **************************-->
@@ -454,6 +468,7 @@
         FROM bios b
         WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
         AND SMODEL != ''
+        AND b.SSN!=''
     </OCSMobilePhoneModelCollector_query>
 
     <!-- Model for MobilePhone - with  use_asset_categories -->
@@ -472,6 +487,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         WHERE ac.category_name in ('$categorielist$')
         AND SMODEL != ''
+        AND b.SSN!=''
     </OCSMobilePhoneModelCollector_with_categories_query>
 
 	<!-- MobilePhone  -->
@@ -494,6 +510,7 @@
         JOIN sim AS s ON s.hardware_id = h.id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.TYPE COLLATE utf8_general_ci LIKE 'Mobile'
+        AND b.SSN!=''
     </OCSMobilePhoneCollector_query>
 
 	<!-- MobilePhone - with categories -->
@@ -522,6 +539,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND b.SSN!=''
     </OCSMobilePhoneCollector_with_categories_query>
 
 	<!--******************* VirtualMachine *************************-->
@@ -545,6 +563,7 @@
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
+        AND b.SSN!=''
     </OCSVirtualMachineCollector_query>
 
 	<!-- VirtualMachine -->
@@ -573,6 +592,7 @@
         JOIN assets_categories ac ON ac.id = h.category_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
+        AND b.SSN!=''
     </OCSVirtualMachineCollector_with_categories_query>
 
 	<!--******************* Logical Interface for Virtual Machine *************************-->
@@ -600,6 +620,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSLogicalInterfaceCollector_query>
 
   <!-- LogicalInterface for VirtualMachine -->
@@ -631,6 +652,7 @@
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
+        AND b.SSN!=''
     </OCSLogicalInterfaceCollector_with_categories_query>
 
 	<!--************************ IP *******************************-->
@@ -639,7 +661,7 @@
 	<OCSIPv4AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
-        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ip,
+        n.IPADDRESS as ip,
         '$default_ip_status$' as status,
          IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
@@ -647,8 +669,9 @@
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
-        WHERE IF(n.IPADDRESS REGEXP '^[:]', false, true)
+        WHERE IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', true, false)
         AND n.IPADDRESS!=''
+        AND b.SSN!=''
         group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv4AddressCollector_query>
 
@@ -656,7 +679,7 @@
 	<OCSIPv6AddressCollector_query>
         SELECT min(n.ID) as primary_key,
         '$default_org_id$' as org_id,
-        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ip,
+        n.IPADDRESS as ip,
         '$default_ip_status$' as status,
         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
@@ -664,8 +687,10 @@
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
-        WHERE IF(n.IPADDRESS REGEXP '^[:]', true, false)
+        WHERE IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,45}$', true, false)
+        AND IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', false, true)
         AND n.IPADDRESS!=''
+        AND b.SSN!=''
         group by org_id,  ip,  status,  short_name,  view_id
     </OCSIPv6AddressCollector_query>
 
@@ -717,8 +742,14 @@
         SELECT Software
     </OCSSoftwareCollector_getListFromItop>
 
-	<!-- Software -->
-	<OCSSoftwareCollector_query>
+  <!-- select all asset category synchronized with iTop-->
+  <OCSSoftwareCollector_getListAssetCategoryFromItop>
+        SELECT OCSAssetCategory
+        WHERE target_class IN ('$targetlist$')
+    </OCSSoftwareCollector_getListAssetCategoryFromItop>
+
+  <!-- Software -->
+  <OCSSoftwareCollector_query>
         SELECT concat(s.name_id,'-',sv.ID) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
@@ -730,7 +761,7 @@
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
         JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn .name IN ('$softwarelist$')
     </OCSSoftwareCollector_query>
 
@@ -766,12 +797,32 @@
         JOIN software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareCollector_with_categories_query>
 
-	<!-- SoftwareLicence - with  use_software_categories-->
-	<OCSSoftwareLicenceCollector_with_categories_query>
+	<OCSSoftwareCollector_with_2categories_query>
+        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
+        sn.NAME as name,
+        sv.VERSION as version,
+        sp.PUBLISHER as vendor,
+       (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=h.id) as cvss,
+        '$type_id$' as type
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN software_publisher sp ON sp.ID = s.PUBLISHER_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSSoftwareCollector_with_2categories_query>
+
+  <!-- SoftwareLicence - with  use_software_categories-->
+  <OCSSoftwareLicenceCollector_with_categories_query>
         SELECT distinct op.id as primary_key,
         op.GUID as name,
         concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
@@ -783,9 +834,23 @@
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSSoftwareLicenceCollector_with_categories_query>
 
-	<!--********************** PCSoftware *************************-->
-	<!-- PCSoftware adds a link between CI and software of type PCSoftware on an existing software already in iTop-->
-	<OCSPCSoftwareCollector_getListFromItop>
+   <OCSSoftwareLicenceCollector_with_2categories_query>
+        SELECT distinct op.id as primary_key,
+        op.GUID as name,
+        concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
+        op.OFFICEKEY as licence_key,
+        '$default_org_id$' as org_id
+        FROM officepack op
+        JOIN software_name sn ON sn.ID= op.PRODUCTID
+        JOIN software_categories sc ON sc.ID =s.CATEGORY_ID
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSSoftwareLicenceCollector_with_2categories_query>
+
+  <!--********************** PCSoftware *************************-->
+  <!-- PCSoftware adds a link between CI and software of type PCSoftware on an existing software already in iTop-->
+  <OCSPCSoftwareCollector_getListFromItop>
         SELECT Software
         WHERE type='PCSoftware'
     </OCSPCSoftwareCollector_getListFromItop>
@@ -805,12 +870,12 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_query>
 
-    <!-- PCSoftware - with licence-->
-    <OCSPCSoftwareCollector_with_licence_query>
+  <!-- PCSoftware - with licence-->
+  <OCSPCSoftwareCollector_with_licence_query>
         SELECT s.id as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
@@ -827,7 +892,7 @@
         LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_licence_query>
 
@@ -856,9 +921,32 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_categories_query>
+
+    <OCSPCSoftwareCollector_with_2categories_query>
+          SELECT s.id as primary_key,
+          sn.NAME as name,
+          concat(sn.NAME,' ',sv.VERSION) as software_id,
+          h.NAME as system_id,
+          s.folder as path,
+          s.COMMENTS as description,
+          '$default_active_status$' as status,
+          '$default_org_id$' as org_id,
+          null as softwarelicence_id
+          FROM software_categories sc
+          JOIN software_categories_link sl ON sc.ID =sl.category_ID
+          JOIN software_name sn ON sl.NAME_ID = sn.ID
+          JOIN software_version sv ON sv.ID =sl.VERSION_ID
+          JOIN software s ON s.NAME_ID = sn.ID
+                    AND s.VERSION_ID =sl.VERSION_ID
+          JOIN hardware h ON h.ID= s.HARDWARE_ID
+          JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+          JOIN assets_categories ac ON ac.id = h.category_id
+          WHERE sc.category_name in ('$softwarelist$')
+          AND  ac.category_name in ('$categorielist$')
+      </OCSPCSoftwareCollector_with_2categories_query>
 
 
 	<!-- PCSoftware -  with  use_software_categories and licence-->
@@ -882,11 +970,37 @@
         LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
         AND op.PRODUCT=sn.NAME
         AND op.OFFICEVERSION=sv.VERSION
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSPCSoftwareCollector_with_licence_with_categories_query>
 
-    <!--********************** WebServer *************************-->
+    <OCSPCSoftwareCollector_with_licence_with_2categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        op.GUID as softwarelicence_id
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        LEFT JOIN officepack op ON h.ID= op.HARDWARE_ID
+        AND op.PRODUCT=sn.NAME
+        AND op.OFFICEVERSION=sv.VERSION
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSPCSoftwareCollector_with_licence_with_2categories_query>
+
+  <!--********************** WebServer *************************-->
 
     <!-- WebServer adds a link between CI and software of type WebServer on an existing software already in iTop-->
     <OCSWebServerCollector_getListFromItop>
@@ -908,7 +1022,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSWebServerCollector_query>
 
@@ -935,11 +1049,34 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSWebServerCollector_with_categories_query>
 
-    <!--********************** OtherSoftware *************************-->
+      <OCSWebServerCollector_with_2categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSWebServerCollector_with_2categories_query>
+
+  <!--********************** OtherSoftware *************************-->
 
     <!-- OtherSoftware adds a link between CI and software of type OtherSoftware on an existing software already in iTop-->
     <OCSOtherSoftwareCollector_getListFromItop>
@@ -961,7 +1098,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSOtherSoftwareCollector_query>
 
@@ -986,13 +1123,36 @@
         JOIN software_name sn ON sl.NAME_ID = sn.ID
         JOIN software_version sv ON sv.ID =sl.VERSION_ID
         JOIN software s ON s.NAME_ID = sn.ID
-                  AND s.VERSION_ID =sl.VERSION_ID
+                                  AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSOtherSoftwareCollector_with_categories_query>
 
-    <!--********************** Middleware *************************-->
+
+    <OCSOtherSoftwareCollector_with_2categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSOtherSoftwareCollector_with_2categories_query>
+  <!--********************** Middleware *************************-->
 
     <!-- Middleware adds a link between CI and software of type Middleware on an existing software already in iTop-->
     <OCSMiddlewareCollector_getListFromItop>
@@ -1014,7 +1174,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSMiddlewareCollector_query>
 
@@ -1041,14 +1201,37 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSMiddlewareCollector_with_categories_query>
 
-    <!--********************** DBServer *************************-->
+    <OCSMiddlewareCollector_with_2categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSMiddlewareCollector_with_2categories_query>
 
-    <!-- DBServer adds a link between CI and software of type DBServer on an existing software already in iTop-->
-    <OCSDBServerCollector_getListFromItop>
+  <!--********************** DBServer *************************-->
+
+  <!-- DBServer adds a link between CI and software of type DBServer on an existing software already in iTop-->
+  <OCSDBServerCollector_getListFromItop>
         SELECT Software
         WHERE type='DBServer'
     </OCSDBServerCollector_getListFromItop>
@@ -1067,7 +1250,7 @@
         JOIN software s ON s.NAME_ID = sn.ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
         JOIN software_version sv ON sv.ID =s.VERSION_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sn.NAME in ('$softwarelist$')
     </OCSDBServerCollector_query>
 
@@ -1094,9 +1277,33 @@
         JOIN software s ON s.NAME_ID = sn.ID
                   AND s.VERSION_ID =sl.VERSION_ID
         JOIN hardware h ON h.ID= s.HARDWARE_ID
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
         WHERE sc.CATEGORY_NAME in ('$softwarelist$')
     </OCSDBServerCollector_with_categories_query>
+
+
+    <OCSDBServerCollector_with_2categories_query>
+        SELECT s.id as primary_key,
+        sn.NAME as name,
+        concat(sn.NAME,' ',sv.VERSION) as software_id,
+        h.NAME as system_id,
+        s.folder as path,
+        s.COMMENTS as description,
+        '$default_active_status$' as status,
+        '$default_org_id$' as org_id,
+        null as softwarelicence_id
+        FROM software_categories sc
+        JOIN software_categories_link sl ON sc.ID =sl.category_ID
+        JOIN software_name sn ON sl.NAME_ID = sn.ID
+        JOIN software_version sv ON sv.ID =sl.VERSION_ID
+        JOIN software s ON s.NAME_ID = sn.ID
+                  AND s.VERSION_ID =sl.VERSION_ID
+        JOIN hardware h ON h.ID= s.HARDWARE_ID
+        JOIN (select ssn, max(hardware_id) id_max from bios WHERE SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE sc.category_name in ('$softwarelist$')
+        AND  ac.category_name in ('$categorielist$')
+    </OCSDBServerCollector_with_2categories_query>
 
   <!--****************************************************************************-->
   <!--***************** Launch sequence ******************************-->

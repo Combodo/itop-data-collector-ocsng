@@ -22,7 +22,7 @@ class OCSlnkIPInterfaceToIPAddressCollector extends AbstractOCSCollector
 		// Process each line of the CSV
 		parent::ProcessLineBeforeSynchro($aLineData, $iLineIndex);
 
-		$this->oIPAddressLookup->Lookup($aLineData, array('org_id', 'ipaddress_id'), 'ipaddress_id', $iLineIndex);
+		$this->oIPAddressLookup->Lookup($aLineData, array('org_id', 'ipaddress_id'), 'ipaddress_id', $iLineIndex, false);
 		$this->oIPInterfaceLookup->Lookup($aLineData, array('macaddress'), 'ipinterface_id', $iLineIndex);
 	}
 
