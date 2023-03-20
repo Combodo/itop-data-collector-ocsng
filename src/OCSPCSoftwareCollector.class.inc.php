@@ -7,13 +7,6 @@
 
 class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
 {
-    public function Init(): void
-    {
-        parent::Init();
-        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes' && $this->TestIfTableExistsInOCS('officepack')) {
-            $this->aFields['softwarelicence_id']['update'] = true;
-        }
-    }
 
 	public function AttributeIsOptional($sAttCode)
 	{
@@ -39,9 +32,6 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
 		        $sSQLQueryName = '_with_categories'.$sSQLQueryName;
 	        }
         }
-        if ($this->aFields['softwarelicence_id']['update']) {
-            $sSQLQueryName = "_with_licence".$sSQLQueryName;
-        }
         Utils::Log(LOG_DEBUG, 'sSQLQueryName'.$sSQLQueryName);
         return $sSQLQueryName;
     }
@@ -57,34 +47,5 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
             return true;
         }
         return false;
-    }
-
-    /*With Licence*/
-    protected function MustProcessBeforeSynchro()
-    {
-        // We must reprocess the CSV data obtained from the inventory script
-        // to lookup the Brand/Model and OSFamily/OSVersion in iTop
-        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected function InitProcessBeforeSynchro()
-    {
-        // Retrieve the identifiers of the OSVersion since we must do a lookup based on two fields: Family + Version
-        // which is not supported by the iTop Data Synchro... so let's do the job of an ETL
-        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') {
-            $this->oSoftwareLicence = new LookupTable('SELECT SoftwareLicence', array('software_name', 'org_id', 'name'));
-        }
-    }
-
-    protected function ProcessLineBeforeSynchro(&$aLineData, $iLineIndex)
-    {
-        // Process each line of the CSV
-        if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') {
-            $this->oSoftwareLicence->Lookup($aLineData, array('name', 'org_id', 'softwarelicence_id'), 'softwarelicence_id', $iLineIndex, true);
-        }
     }
 }
