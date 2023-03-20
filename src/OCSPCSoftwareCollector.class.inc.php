@@ -84,7 +84,7 @@ class OCSPCSoftwareCollector extends AbstractOCSSoftwareCollector
     {
         // Process each line of the CSV
         if (Utils::GetConfigurationValue('LicenceCollection', 'no') == 'yes') {
-            $this->oSoftwareLicence->Lookup($aLineData, array('name', 'org_id', 'softwarelicence_id'), 'softwarelicence_id', $iLineIndex);
+            $this->oSoftwareLicence->Lookup($aLineData, array('name', 'org_id', 'softwarelicence_id'), 'softwarelicence_id', $iLineIndex, true);
         }
     }
 }

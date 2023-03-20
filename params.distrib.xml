@@ -193,7 +193,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         IF(h.IPADDR REGEXP '^[0-9.]{7,15}$',h.IPADDR,null) as managementip,
-        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as managementip_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$',h.IPADDR,null) as managementip_id,
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
@@ -225,7 +225,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         IF(h.IPADDR REGEXP '^[0-9.]{7,15}$',h.IPADDR,null) as managementip,
-        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as managementip_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$',h.IPADDR,null) as managementip_id,
         b.SMANUFACTURER as brand_id,
         b.SMODEL as model_id,
         b.SSN as serialnumber,
@@ -242,10 +242,10 @@
         AND b.SSN!=''
     </OCSServerCollector_with_categories_query>
 
-    <!--******************** Physical Interface for server **********************-->
-    <!-- PhysicalInterface for Server  -->
-    <OCSServerPhysicalInterfaceCollector_query>
-        SELECT n.ID as primary_key,
+  <!--******************** Physical Interface for server **********************-->
+  <!-- PhysicalInterface for Server  -->
+  <OCSServerPhysicalInterfaceCollector_query>
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -260,7 +260,7 @@
         IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
         IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
-        FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        FROM (select max(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00'  group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
@@ -269,6 +269,7 @@
         AND b.TYPE COLLATE utf8_general_ci NOT IN ('Notebook','Laptop','Mobile')
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSServerPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for Server  -->
@@ -278,7 +279,7 @@
     </OCSServerPhysicalInterfaceCollector_getCategoriesFromItop>
 
     <OCSServerPhysicalInterfaceCollector_with_categories_query>
-        SELECT n.ID as primary_key,
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -293,7 +294,7 @@
         IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
         IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
-        FROM  (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        FROM  (select max(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
@@ -302,6 +303,7 @@
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSServerPhysicalInterfaceCollector_with_categories_query>
 
     <!--******************** Model for PC *************************-->
@@ -350,7 +352,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as ipaddress_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$',h.IPADDR,null) as ipaddress_id,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -381,7 +383,7 @@
         b.SSN as serialnumber,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
-        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$',h.IPADDR,null) as ipaddress_id,
+        IF(h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$',h.IPADDR,null) as ipaddress_id,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
         '$default_status$' as status,
         '$default_org_id$' as org_id
@@ -394,10 +396,10 @@
     </OCSPCCollector_with_categories_query>
 
 
-    <!--****************** Physical Interface for PC ************************-->
-    <!-- PhysicalInterface for PC -->
-    <OCSPCPhysicalInterfaceCollector_query>
-        SELECT n.ID as primary_key,
+  <!--****************** Physical Interface for PC ************************-->
+  <!-- PhysicalInterface for PC -->
+  <OCSPCPhysicalInterfaceCollector_query>
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -412,7 +414,7 @@
         IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
         IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
-        FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        FROM (select max(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
@@ -421,6 +423,7 @@
         AND b.TYPE COLLATE utf8_general_ci IN ('Notebook','Laptop')
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSPCPhysicalInterfaceCollector_query>
 
     <!-- PhysicalInterface for PC with categories -->
@@ -430,7 +433,7 @@
     </OCSPCPhysicalInterfaceCollector_getCategoriesFromItop>
 
     <OCSPCPhysicalInterfaceCollector_with_categories_query>
-        SELECT n.ID as primary_key,
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -445,7 +448,7 @@
         IF(n.IPMASK REGEXP '^[0-9.]{7,15}$',n.IPMASK,null) as ipmask,
         IF(n.IPGATEWAY REGEXP '^[0-9.]{7,15}$',n.IPGATEWAY,null) as ipgateway,
         h.NAME as connectableci_id
-        FROM (select min(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
+        FROM (select max(id) id, MACADDR FROM networks where MACADDR != '00:00:00:00:00:00' group by MACADDR) AS n_filter
         JOIN networks AS n ON n_filter.id=n.id
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
@@ -454,6 +457,7 @@
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSPCPhysicalInterfaceCollector_with_categories_query>
 
 	<!--********************* MobilePhone **************************-->
@@ -542,10 +546,10 @@
         AND b.SSN!=''
     </OCSMobilePhoneCollector_with_categories_query>
 
-	<!--******************* VirtualMachine *************************-->
-	<!-- VirtualMachine -->
-	<OCSVirtualMachineCollector_query>
-        SELECT h.ID as primary_key,
+  <!--******************* VirtualMachine *************************-->
+  <!-- VirtualMachine -->
+  <OCSVirtualMachineCollector_query>
+        SELECT (select min(b_min.hardware_id) FROM bios b_min where b_min.SSN = b.SSN) as primary_key,
         h.ID as ocs_id,
         h.NAME as name,
         h.OSNAME as osfamily_id,
@@ -553,7 +557,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         IF( h.IPADDR REGEXP '^[0-9.]{7,15}$', h.IPADDR, null) as managementip,
-        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$', h.IPADDR, null) as managementip_id,
+        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$', h.IPADDR, null) as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
@@ -581,7 +585,7 @@
         h.PROCESSORT as cpu,
         h.MEMORY as ram,
         IF( h.IPADDR REGEXP '^[0-9.]{7,15}$', h.IPADDR, null) as managementip,
-        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,45}$', h.IPADDR, null) as managementip_id,
+        IF( h.IPADDR REGEXP '^[0-9a-f.:]{2,39}$', h.IPADDR, null) as managementip_id,
         h.WINPRODID as oslicence_id,
         h.OSCOMMENTS as ocs_oscomment,
         (select max(convert(cvss,DECIMAL)) from cve_search_computer sc where sc.hardware_id=b.hardware_id) as cvss,
@@ -597,9 +601,9 @@
 
 	<!--******************* Logical Interface for Virtual Machine *************************-->
 
-	<!-- LogicalInterface for VirtualMachine -->
-	<OCSLogicalInterfaceCollector_query>
-        SELECT n.ID as primary_key,
+  <!-- LogicalInterface for VirtualMachine -->
+  <OCSLogicalInterfaceCollector_query>
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -618,9 +622,11 @@
         JOIN hardware AS h ON n.hardware_id=h.id
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
         WHERE b.SMANUFACTURER COLLATE utf8_general_ci LIKE 'VMware%'
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSLogicalInterfaceCollector_query>
 
   <!-- LogicalInterface for VirtualMachine -->
@@ -630,7 +636,7 @@
     </OCSLogicalInterfaceCollector_getCategoriesFromItop>
 
 	<OCSLogicalInterfaceCollector_with_categories_query>
-        SELECT n.ID as primary_key,
+        SELECT (select min(n_min.id) FROM networks n_min where n_min.MACADDR = n.MACADDR) as primary_key,
         n.DESCRIPTION as name,
         IF(n.SPEED REGEXP '^[0-9]+ ',
               CASE LEFT(RIGHT(n.SPEED, LOCATE(' ', REVERSE(n.SPEED))-1),1)
@@ -650,16 +656,18 @@
         JOIN bios AS b ON h.id=b.hardware_id
         JOIN assets_categories ac ON ac.id = h.category_id
         JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
         WHERE ac.category_name in ('$categorielist$')
         AND n.DESCRIPTION!=''
         AND b.SSN!=''
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
     </OCSLogicalInterfaceCollector_with_categories_query>
 
-	<!--************************ IP *******************************-->
+  <!--************************ IP *******************************-->
 
-	<!-- IPv4Address - TeemIp installed -->
-	<OCSIPv4AddressCollector_query>
-        SELECT min(n.ID) as primary_key,
+  <!-- IPv4Address - TeemIp installed -->
+  <OCSIPv4AddressCollector_query>
+     SELECT distinct n.IPADDRESS as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
         '$default_ip_status$' as status,
@@ -667,44 +675,136 @@
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
-        JOIN bios AS b ON h.id=b.hardware_id
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
         WHERE IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', true, false)
         AND n.IPADDRESS!=''
-        AND b.SSN!=''
-        group by org_id,  ip,  status,  short_name,  view_id
+UNION
+	SELECT distinct h.IPADDR as primary_key,
+        '$default_org_id$' as org_id,
+         h.IPADDR as ip,
+        '$default_ip_status$' as status,
+         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+        '$default_view_name$' as view_id
+        FROM hardware AS h
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        WHERE IF(h.IPADDR  REGEXP '^[0-9.]{7,15}$', true, false)
     </OCSIPv4AddressCollector_query>
 
-	<!-- IPv6Address - TeemIp installed -->
-	<OCSIPv6AddressCollector_query>
-        SELECT min(n.ID) as primary_key,
+    <OCSIPv4AddressCollector_with_categories_query>
+         SELECT distinct n.IPADDRESS as primary_key,
+            '$default_org_id$' as org_id,
+            n.IPADDRESS as ip,
+            '$default_ip_status$' as status,
+             IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+            '$default_view_name$' as view_id
+            FROM networks AS n
+            JOIN hardware AS h ON n.hardware_id=h.id
+            JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+            JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
+            JOIN assets_categories ac ON ac.id = h.category_id
+            WHERE IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', true, false)
+            AND  ac.category_name in ('$categorielist$')
+    UNION
+      SELECT distinct h.IPADDR as primary_key,
+            '$default_org_id$' as org_id,
+             h.IPADDR as ip,
+            '$default_ip_status$' as status,
+             IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+            '$default_view_name$' as view_id
+            FROM hardware AS h
+            JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+            JOIN assets_categories ac ON ac.id = h.category_id
+            WHERE IF(h.IPADDR  REGEXP '^[0-9.]{7,15}$', true, false)
+            AND  ac.category_name in ('$categorielist$')
+    </OCSIPv4AddressCollector_with_categories_query>
+
+  <!-- IPv6Address - TeemIp installed -->
+  <OCSIPv6AddressCollector_query>
+    SELECT distinct n.IPADDRESS as primary_key,
         '$default_org_id$' as org_id,
         n.IPADDRESS as ip,
         '$default_ip_status$' as status,
-        IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
         '$default_view_name$' as view_id
         FROM networks AS n
         JOIN hardware AS h ON n.hardware_id=h.id
-        JOIN bios AS b ON h.id=b.hardware_id
-        JOIN (select ssn, max(hardware_id) id_max from bios group by ssn) last_bios on last_bios.id_max=h.id
-        WHERE IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,45}$', true, false)
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
+        WHERE  IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
         AND IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', false, true)
-        AND n.IPADDRESS!=''
-        AND b.SSN!=''
-        group by org_id,  ip,  status,  short_name,  view_id
+UNION
+	SELECT distinct h.IPADDR as primary_key,
+        '$default_org_id$' as org_id,
+         h.IPADDR as ip,
+        '$default_ip_status$' as status,
+         IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+        '$default_view_name$' as view_id
+        FROM hardware AS h
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        WHERE  IF(h.IPADDR  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
+        AND IF(h.IPADDR  REGEXP '^[0-9.]{7,15}$', false, true)
     </OCSIPv6AddressCollector_query>
 
-	<!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
-	<OCSlnkIPInterfaceToIPAddressCollector_query>
+    <OCSIPv6AddressCollector_with_categories_query>
+      SELECT distinct n.IPADDRESS as primary_key,
+          '$default_org_id$' as org_id,
+          n.IPADDRESS as ip,
+          '$default_ip_status$' as status,
+           IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+          '$default_view_name$' as view_id
+          FROM networks AS n
+          JOIN hardware AS h ON n.hardware_id=h.id
+          JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+          JOIN (select MACADDR, max(ID) id_max from networks group by MACADDR) last_network on last_network.id_max=n.id
+          JOIN assets_categories ac ON ac.id = h.category_id
+          WHERE  IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
+          AND IF(n.IPADDRESS  REGEXP '^[0-9.]{7,15}$', false, true)
+          AND  ac.category_name in ('$categorielist$')
+  UNION
+    SELECT distinct h.IPADDR as primary_key,
+          '$default_org_id$' as org_id,
+           h.IPADDR as ip,
+          '$default_ip_status$' as status,
+           IF(h.DNS REGEXP '[\.[0-9]]*', '', h.DNS) as short_name,
+          '$default_view_name$' as view_id
+          FROM hardware AS h
+          JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+          JOIN assets_categories ac ON ac.id = h.category_id
+          WHERE  IF(h.IPADDR  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
+          AND IF(h.IPADDR  REGEXP '^[0-9.]{7,15}$', false, true)
+          AND  ac.category_name in ('$categorielist$')
+    </OCSIPv6AddressCollector_with_categories_query>
+
+  <!-- lnkIPInterfaceToIPAddress - TeemIp installed -->
+  <OCSlnkIPInterfaceToIPAddressCollector_query>
         SELECT min(n.ID) as primary_key,
         n.MACADDR as ipinterface_id,
-        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,45}$',n.IPADDRESS,null) as ipaddress_id
+        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,39}$',n.IPADDRESS,null) as ipaddress_id
         FROM networks AS n
-        WHERE n.IPADDRESS != ''
+        JOIN hardware AS h ON n.hardware_id=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        WHERE IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
         GROUP BY  ipinterface_id, ipaddress_id
     </OCSlnkIPInterfaceToIPAddressCollector_query>
 
-	<!--*********************** Printer ****************************-->
+
+  <OCSlnkIPInterfaceToIPAddressCollector_with_categories_query>
+        SELECT min(n.ID) as primary_key,
+        n.MACADDR as ipinterface_id,
+        IF(n.IPADDRESS REGEXP '^[0-9a-f.:]{2,39}$',n.IPADDRESS,null) as ipaddress_id
+        FROM networks AS n
+        JOIN hardware AS h ON n.hardware_id=h.id
+        JOIN (select ssn, max(hardware_id) id_max from bios where SSN!='' group by ssn) last_bios on last_bios.id_max=h.id
+        JOIN assets_categories ac ON ac.id = h.category_id
+        WHERE IF(n.IPADDRESS  REGEXP '^[0-9a-f.:]{2,39}$', true, false)
+        AND IF(n.MACADDR REGEXP '^[0:]*$',false,true)
+        AND  ac.category_name in ('$categorielist$')
+        GROUP BY  ipinterface_id, ipaddress_id
+    </OCSlnkIPInterfaceToIPAddressCollector_with_categories_query>
+
+  <!--*********************** Printer ****************************-->
 
 	<OCSPrinterCollector_with_listprinters_query>
         SELECT lp.ID as primary_key,
@@ -750,7 +850,7 @@
 
   <!-- Software -->
   <OCSSoftwareCollector_query>
-        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
@@ -765,9 +865,9 @@
         WHERE sn .name IN ('$softwarelist$')
     </OCSSoftwareCollector_query>
 
-    <!-- SoftwareLicence -->
-    <OCSSoftwareLicenceCollector_query>
-        SELECT distinct op.id as primary_key,
+  <!-- SoftwareLicence -->
+  <OCSSoftwareLicenceCollector_query>
+        SELECT distinct op.GUID as primary_key,
         op.GUID as name,
         concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
         op.OFFICEKEY as licence_key,
@@ -784,7 +884,7 @@
   </OCSSoftwareCollector_with_categories_getListFromItop>
 
 	<OCSSoftwareCollector_with_categories_query>
-        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
@@ -802,7 +902,7 @@
     </OCSSoftwareCollector_with_categories_query>
 
 	<OCSSoftwareCollector_with_2categories_query>
-        SELECT concat(s.name_id,'-',sv.ID) as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION) as primary_key,
         sn.NAME as name,
         sv.VERSION as version,
         sp.PUBLISHER as vendor,
@@ -823,7 +923,7 @@
 
   <!-- SoftwareLicence - with  use_software_categories-->
   <OCSSoftwareLicenceCollector_with_categories_query>
-        SELECT distinct op.id as primary_key,
+        SELECT distinct op.guid as primary_key,
         op.GUID as name,
         concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
         op.OFFICEKEY as licence_key,
@@ -835,7 +935,7 @@
     </OCSSoftwareLicenceCollector_with_categories_query>
 
    <OCSSoftwareLicenceCollector_with_2categories_query>
-        SELECT distinct op.id as primary_key,
+        SELECT distinct op.guid as primary_key,
         op.GUID as name,
         concat(op.PRODUCT,' ',op.OFFICEVERSION) as software_id,
         op.OFFICEKEY as licence_key,
@@ -855,9 +955,9 @@
         WHERE type='PCSoftware'
     </OCSPCSoftwareCollector_getListFromItop>
 
-	<!-- PCSoftware -->
-	<OCSPCSoftwareCollector_query>
-        SELECT s.id as primary_key,
+  <!-- PCSoftware -->
+  <OCSPCSoftwareCollector_query>
+        SELECT  concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -876,7 +976,7 @@
 
   <!-- PCSoftware - with licence-->
   <OCSPCSoftwareCollector_with_licence_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -903,9 +1003,9 @@
         WHERE type='PCSoftware'
     </OCSPCSoftwareCollector_with_categories_getListFromItop>
 
-	<!-- PCSoftware - with  use_software_categories without licence-->
-	<OCSPCSoftwareCollector_with_categories_query>
-        SELECT s.id as primary_key,
+  <!-- PCSoftware - with  use_software_categories without licence-->
+  <OCSPCSoftwareCollector_with_categories_query>
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -926,7 +1026,7 @@
     </OCSPCSoftwareCollector_with_categories_query>
 
     <OCSPCSoftwareCollector_with_2categories_query>
-          SELECT s.id as primary_key,
+          SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
           sn.NAME as name,
           concat(sn.NAME,' ',sv.VERSION) as software_id,
           h.NAME as system_id,
@@ -949,9 +1049,9 @@
       </OCSPCSoftwareCollector_with_2categories_query>
 
 
-	<!-- PCSoftware -  with  use_software_categories and licence-->
-	<OCSPCSoftwareCollector_with_licence_with_categories_query>
-        SELECT s.id as primary_key,
+  <!-- PCSoftware -  with  use_software_categories and licence-->
+  <OCSPCSoftwareCollector_with_licence_with_categories_query>
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -975,7 +1075,7 @@
     </OCSPCSoftwareCollector_with_licence_with_categories_query>
 
     <OCSPCSoftwareCollector_with_licence_with_2categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1009,7 +1109,7 @@
     </OCSWebServerCollector_getListFromItop>
 
     <OCSWebServerCollector_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1033,7 +1133,7 @@
     </OCSWebServerCollector_with_categories_getListFromItop>
 
     <OCSWebServerCollector_with_categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1054,7 +1154,7 @@
     </OCSWebServerCollector_with_categories_query>
 
       <OCSWebServerCollector_with_2categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1085,7 +1185,7 @@
     </OCSOtherSoftwareCollector_getListFromItop>
 
     <OCSOtherSoftwareCollector_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1109,7 +1209,7 @@
     </OCSOtherSoftwareCollector_with_categories_getListFromItop>
 
     <OCSOtherSoftwareCollector_with_categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1131,7 +1231,7 @@
 
 
     <OCSOtherSoftwareCollector_with_2categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1161,7 +1261,7 @@
     </OCSMiddlewareCollector_getListFromItop>
 
     <OCSMiddlewareCollector_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.NAME,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1185,7 +1285,7 @@
     </OCSMiddlewareCollector_with_categories_getListFromItop>
 
     <OCSMiddlewareCollector_with_categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1206,7 +1306,7 @@
     </OCSMiddlewareCollector_with_categories_query>
 
     <OCSMiddlewareCollector_with_2categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1237,7 +1337,7 @@
     </OCSDBServerCollector_getListFromItop>
 
     <OCSDBServerCollector_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1261,7 +1361,7 @@
     </OCSDBServerCollector_with_categories_getListFromItop>
 
     <OCSDBServerCollector_with_categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
@@ -1283,7 +1383,7 @@
 
 
     <OCSDBServerCollector_with_2categories_query>
-        SELECT s.id as primary_key,
+        SELECT concat(sn.name,'-',sv.VERSION,'-',last_bios.SSN) as primary_key,
         sn.NAME as name,
         concat(sn.NAME,' ',sv.VERSION) as software_id,
         h.NAME as system_id,
