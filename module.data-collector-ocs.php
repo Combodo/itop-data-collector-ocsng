@@ -29,7 +29,6 @@ SetupWebPage::AddModule(
 		),
 		'mandatory' => false,
 		'visible' => true,
-2.021
 		// Components
 		//
 		'datamodel' => array(
