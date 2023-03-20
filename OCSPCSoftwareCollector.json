@@ -127,7 +127,7 @@
 			"update": "0",
 			"reconcile": "0",
 			"update_policy": "master_locked",
-			"reconciliation_attcode": "",
+			"reconciliation_attcode": "id",
 			"finalclass": "SynchroAttExtKey"
 		},
 		{
