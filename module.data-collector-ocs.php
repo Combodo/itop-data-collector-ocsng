@@ -16,7 +16,7 @@
 
 SetupWebPage::AddModule(
 	__FILE__, // Path to the current file, all other file names are relative to the directory containing this file
-	'data-collector-ocs/2.0.0',
+	'itop-data-collector-ocsng/2.0.0',
 	array(
 		// Identification
 		//
@@ -29,7 +29,7 @@ SetupWebPage::AddModule(
 		),
 		'mandatory' => false,
 		'visible' => true,
-
+2.021
 		// Components
 		//
 		'datamodel' => array(
